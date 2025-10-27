@@ -23,6 +23,10 @@ body {
   @apply h-screen w-screen;
 }
 
+#root {
+  @apply flex flex-col justify-center items-center;
+}
+
 header {
   @apply w-full py-5 bg-[var(--light-blue)] flex justify-evenly;
 }
@@ -32,7 +36,15 @@ header {
 }
 
 form {
-  @apply flex flex-col items-center gap-5 p-10 bg-[var(--light-blue)] mt-10 rounded-2xl;
+  @apply flex flex-col items-center gap-5 p-10 bg-[var(--light-blue)] mt-10 rounded-2xl w-[80%];
+}
+
+form span {
+  @apply text-[var(--dark-blue)] text-center;
+}
+
+form span a {
+  @apply underline;
 }
 
 label {

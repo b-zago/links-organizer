@@ -1,5 +1,7 @@
+import SignInForm from "../components/SignInForm";
+
 function SignIn() {
-  return <h1>SIGN IN PAGE</h1>;
+  return <SignInForm />;
 }
 
 export default SignIn;
