@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Roboto Mono";
+  src: url("/fonts/RobotoMono-VariableFont_wght.ttf") format("truetype"),
+    url("/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("truetype");
+}
+
+:root {
+  --light-green: #32d989;
+  --dark-green: #2e5749;
+  --light-blue: #31bbd7;
+  --dark-blue: #1e3a52;
+  --purpel: #573b77;
+
+  font-size: 16px;
+  color: var(--light-green);
+  font-family: "Roboto Mono";
+}
+
+body {
+  background-color: var(--dark-green);
+  @apply h-screen w-screen;
+}
+
+header {
+  @apply w-full py-5 bg-[var(--light-blue)] flex justify-evenly;
+}
+
+.main-container {
+  @apply w-full h-full flex justify-center pt-10;
+}
+
+form {
+  @apply flex flex-col items-center gap-5 p-10 bg-[var(--light-blue)] mt-10 rounded-2xl;
+}
+
+label {
+  @apply font-bold text-[var(--dark-blue)];
+}
+
+input {
+  border: 1px solid var(--dark-blue);
+  color: var(--dark-blue);
+  padding-left: 5px;
+  @apply py-1;
+}
+
+input:focus {
+  outline: 0;
+}
+
+header > a {
+  @apply flex justify-center items-center text-[var(-light-green)] text-center bg-[var(--purpel)] py-3 px-4 rounded-full cursor-pointer;
+}
+
+button {
+  @apply rounded-full bg-[var(--purpel)] py-3 px-5 cursor-pointer;
+}
