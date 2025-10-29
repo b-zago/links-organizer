@@ -1,15 +1,25 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import express from "express";
-import { register } from "./db/auth.js";
+import { login, register } from "./auth/auth.js";
+
+import jwt from "jsonwebtoken";
+import { authenticateToken } from "./auth/middleware.js";
 
 // Create a new express application instance
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 //for development
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Your React app URL
+    credentials: true, // CRITICAL! Allows cookies to be sent/received
+  })
+);
 
 // Set the network port
 const port = process.env.PORT || 3000;
@@ -24,10 +34,36 @@ app.post("/register", async (req: Request, res: Response) => {
   //console.log("res", res);
   try {
     await register(req.body);
-    res.sendStatus(200);
+    res.status(200).json({ message: "User registered!" });
   } catch (err) {
-    res.status(400).json({ error: (err as Error).message });
+    res.status(400).json({ message: (err as Error).message });
   }
+});
+
+app.post("/login", async (req: Request, res: Response) => {
+  console.log(req.body);
+  //console.log("res", res);
+  try {
+    const jwtToken = await login(req.body);
+
+    res.cookie("token", jwtToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Only true in production
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.status(200).json({ message: "User Logged in!" });
+  } catch (err) {
+    res.status(400).json({ message: (err as Error).message });
+  }
+});
+
+app.get("/auth/verify", authenticateToken, (req: Request, res: Response) => {
+  res.json({
+    authenticated: true,
+    user: req.user,
+  });
 });
 
 // Start the Express server

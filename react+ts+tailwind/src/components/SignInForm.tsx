@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { register } from "../utils/fetches/userAuth";
+import { login, register } from "../utils/fetches/userAuth";
 
 function SignInForm() {
   const [signIn, setSignIn] = useState(true);
@@ -11,14 +11,30 @@ function SignInForm() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (signIn) {
-      //some validation
+      login(username, password)
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message);
+          }
+          return data;
+        })
+        .then((data) => console.log(data))
+        .catch((data) => console.error(data.message));
     } else {
       //some validation
       register(username, email, password)
-        .then((res: any) => {
-          console.log(res);
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message);
+          }
+          return data;
         })
-        .catch((error) => console.error(error));
+        .then((data) => console.log(data))
+        .catch((data) => console.error(data.message));
     }
   };
 
