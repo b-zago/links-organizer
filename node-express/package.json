@@ -21,11 +21,17 @@
   },
   "homepage": "https://github.com/b-zago/node-express#readme",
   "dependencies": {
-    "express": "^5.1.0"
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.2.0",
+    "@types/pg": "^8.15.6",
     "tsx": "^4.20.3",
     "typescript": "^5.9.2"
   }
