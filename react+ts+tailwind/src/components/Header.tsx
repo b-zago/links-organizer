@@ -5,8 +5,11 @@ import {
   faUser,
 } from "@fortawesome/free-regular-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
+import { useContext } from "react";
 
 function Header() {
+  const { userData } = useContext(UserContext);
   const navigate = useNavigate();
 
   return (
@@ -20,9 +23,13 @@ function Header() {
           <FontAwesomeIcon icon={faLightbulb} />
           About
         </a>
-        <a onClick={() => navigate("/signin")}>
+        <a
+          onClick={() =>
+            userData ? navigate("/profile") : navigate("/signin")
+          }
+        >
           <FontAwesomeIcon icon={faUser} />
-          Sign In
+          {userData ? userData.username : "Sign In"}
         </a>
       </header>
     </>

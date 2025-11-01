@@ -1,4 +1,18 @@
+export type UserData = {
+  id: number;
+  username: string;
+  email: string;
+};
+
 export type UserContextType = {
-  username: string | null;
-  setUsername: React.Dispatch<React.SetStateAction<string | null>> | null;
+  userData: UserData | null;
+  setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
+};
+
+export type AuthVerifyResponse =
+  | { authenticated: false }
+  | { authenticated: true; user: UserData };
+
+export type AuthMessage = {
+  message: string;
 };

@@ -1,7 +1,13 @@
-import { useState } from "react";
-import { login, register } from "../utils/fetches/userAuth";
+import { useContext, useState } from "react";
+import { authVerify, login, register } from "../utils/fetches/userAuth";
+import { UserContext } from "../context/UserContext";
+import type { AuthMessage } from "../types/types";
+import { useNavigate } from "react-router-dom";
 
 function SignInForm() {
+  const { setUserData } = useContext(UserContext);
+  const navigate = useNavigate();
+
   const [signIn, setSignIn] = useState(true);
 
   const [username, setUsername] = useState("");
@@ -11,6 +17,7 @@ function SignInForm() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (signIn) {
+      //some validation
       login(username, password)
         .then(async (res) => {
           const data = await res.json();
@@ -20,8 +27,12 @@ function SignInForm() {
           }
           return data;
         })
-        .then((data) => console.log(data))
-        .catch((data) => console.error(data.message));
+        .then((data: AuthMessage) => {
+          console.log(data.message); //show toast message here
+          authVerify(setUserData);
+          navigate("/");
+        })
+        .catch((data: AuthMessage) => console.error(data.message)); //show toast message here
     } else {
       //some validation
       register(username, email, password)
@@ -33,8 +44,8 @@ function SignInForm() {
           }
           return data;
         })
-        .then((data) => console.log(data))
-        .catch((data) => console.error(data.message));
+        .then((data: AuthMessage) => console.log(data.message)) //show toast message here
+        .catch((data: AuthMessage) => console.error(data.message)); //show toast message here
     }
   };
 

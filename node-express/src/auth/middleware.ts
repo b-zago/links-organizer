@@ -10,7 +10,7 @@ export const authenticateToken = (
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ error: "Not authenticated" });
+    return res.status(200).json({ authenticated: false });
   }
 
   jwt.verify(
@@ -18,7 +18,7 @@ export const authenticateToken = (
     process.env.JWT_SECRET as string,
     (err: VerifyErrors | null, user: string | JwtPayload | undefined) => {
       if (err) {
-        return res.status(403).json({ error: "Invalid token" });
+        return res.status(403).json({ authenticated: false });
       }
       req.user = user as UserJwtPayload;
       next();

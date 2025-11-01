@@ -53,14 +53,14 @@ app.post("/login", async (req: Request, res: Response) => {
       maxAge: 24 * 60 * 60 * 1000,
     });
 
-    res.status(200).json({ message: "User Logged in!" });
+    res.status(200).json({ message: "Logged in!" });
   } catch (err) {
     res.status(400).json({ message: (err as Error).message });
   }
 });
 
 app.get("/auth/verify", authenticateToken, (req: Request, res: Response) => {
-  res.json({
+  res.status(200).json({
     authenticated: true,
     user: req.user,
   });

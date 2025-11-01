@@ -3,27 +3,16 @@ import Header from "./components/Header";
 import Home from "./routes/Home";
 import About from "./routes/About";
 import SignIn from "./routes/SignIn";
-import { useEffect } from "react";
-import { checkAuth } from "./utils/fetches/userAuth";
+import { useContext, useEffect } from "react";
+import { authVerify, checkAuth } from "./utils/fetches/userAuth";
+import type { AuthVerifyResponse, UserData } from "./types/types";
+import { UserContext } from "./context/UserContext";
+import Profile from "./routes/Profile";
 
 function App() {
-  useEffect(() => {
-    checkAuth()
-      .then(async (res) => {
-        const data = await res.json();
+  const { setUserData } = useContext(UserContext);
 
-        if (!res.ok) {
-          throw new Error("Could not send cookies to server");
-        }
-        return data;
-      })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
+  useEffect(() => authVerify(setUserData), []);
 
   return (
     <>
@@ -32,6 +21,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </>
   );

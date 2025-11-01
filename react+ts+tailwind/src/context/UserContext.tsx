@@ -1,18 +1,18 @@
 import { createContext, useState } from "react";
 
 import type { ReactNode } from "react";
-import type { UserContextType } from "../types/types";
+import type { UserContextType, UserData } from "../types/types";
 
 export const UserContext = createContext<UserContextType>({
-  username: null,
-  setUsername: null,
+  userData: null,
+  setUserData: () => {},
 });
 
 export function UserContextProvider({ children }: { children: ReactNode }) {
-  const [username, setUsername] = useState<string | null>(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
 
   return (
-    <UserContext.Provider value={{ username, setUsername }}>
+    <UserContext.Provider value={{ userData, setUserData }}>
       {children}
     </UserContext.Provider>
   );
