@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.items-wrapper {
+  @apply w-[90%] mt-5 flex justify-evenly;
+}
+
+.item {
+  @apply w-[20%] min-h-[75px] flex justify-center items-center cursor-pointer;
+}
+
+.add-item-wrapper {
+  @apply border-1 border-dashed;
+}

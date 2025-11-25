@@ -9,7 +9,7 @@ CREATE INDEX idx_links_created_at ON links(created_at);
 CREATE INDEX idx_links_title_description_fts ON links 
 USING gin(to_tsvector('english', title || ' ' || COALESCE(description, '')));
 
------------------------------------
+----------------------------------- 
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,

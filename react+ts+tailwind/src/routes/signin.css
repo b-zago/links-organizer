@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+form {
+  @apply flex flex-col items-center gap-5 p-10 bg-[var(--light-blue)] mt-10 rounded-2xl w-[80%];
+}
+
+form span {
+  @apply text-[var(--dark-blue)] text-center;
+}
+
+form span a {
+  @apply underline;
+}
+
+label {
+  @apply font-bold text-[var(--dark-blue)];
+}
+
+input {
+  border: 1px solid var(--dark-blue);
+  color: var(--dark-blue);
+  padding-left: 5px;
+  @apply py-1;
+}
+
+input:focus {
+  outline: 0;
+}
+
+button {
+  @apply rounded-full bg-[var(--purpel)] py-3 px-5 cursor-pointer;
+}

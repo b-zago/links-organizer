@@ -16,3 +16,15 @@ export type AuthVerifyResponse =
 export type AuthMessage = {
   message: string;
 };
+
+export type LinkItemProps = {
+  title: string;
+  description: string | null;
+  url: string;
+};
+
+export type FolderItemProps = {
+  title: string;
+  description: string | null;
+  openFolder: () => void;
+};

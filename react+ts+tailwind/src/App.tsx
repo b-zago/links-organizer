@@ -4,8 +4,7 @@ import Home from "./routes/Home";
 import About from "./routes/About";
 import SignIn from "./routes/SignIn";
 import { useContext, useEffect } from "react";
-import { authVerify, checkAuth } from "./utils/fetches/userAuth";
-import type { AuthVerifyResponse, UserData } from "./types/types";
+import { authVerify } from "./utils/fetches/userAuth";
 import { UserContext } from "./context/UserContext";
 import Profile from "./routes/Profile";
 
