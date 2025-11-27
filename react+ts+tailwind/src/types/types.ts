@@ -32,6 +32,7 @@ export type FolderItemProps = {
 
 export type Link = {
   id: number;
+  parentId: number | null;
   type: "link";
   url: string;
   title: string;
@@ -40,6 +41,7 @@ export type Link = {
 
 export type Folder = {
   id: number;
+  parentId: number | null;
   type: "folder";
   name: string;
   description: string | null;
@@ -54,4 +56,9 @@ export type DataContextType = {
   itemsData: HomeFolder;
   index: Map<number, Folder | Link>;
   setItemsData: React.Dispatch<React.SetStateAction<HomeFolder>>;
+};
+
+export type BreadcrumbsProps = {
+  list: { id: number; title: string }[];
+  goToFolder: React.Dispatch<React.SetStateAction<number>>;
 };

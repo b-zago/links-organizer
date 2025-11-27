@@ -4,18 +4,21 @@ export const homeFolder: HomeFolder = {
   folderContents: [
     {
       id: 1,
+      parentId: null,
       type: "folder",
       name: "Work Projects",
       description: "All my professional work and client projects",
       folderContents: [
         {
           id: 2,
+          parentId: 1,
           type: "folder",
           name: "Client A",
           description: "E-commerce platform redesign",
           folderContents: [
             {
               id: 3,
+              parentId: 2,
               type: "link",
               url: "https://figma.com/client-a-designs",
               title: "Figma Design Files",
@@ -23,6 +26,7 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 4,
+              parentId: 2,
               type: "link",
               url: "https://github.com/client-a/ecommerce",
               title: "GitHub Repository",
@@ -30,12 +34,14 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 5,
+              parentId: 2,
               type: "folder",
               name: "Documentation",
               description: null,
               folderContents: [
                 {
                   id: 6,
+                  parentId: 5,
                   type: "link",
                   url: "https://docs.google.com/technical-spec",
                   title: "Technical Specification",
@@ -43,6 +49,7 @@ export const homeFolder: HomeFolder = {
                 },
                 {
                   id: 7,
+                  parentId: 5,
                   type: "link",
                   url: "https://notion.so/client-a-meeting-notes",
                   title: "Meeting Notes",
@@ -54,12 +61,14 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 8,
+          parentId: 1,
           type: "folder",
           name: "Client B",
           description: "Mobile app development for fitness tracking",
           folderContents: [
             {
               id: 9,
+              parentId: 8,
               type: "link",
               url: "https://trello.com/client-b-board",
               title: "Trello Board",
@@ -67,6 +76,7 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 10,
+              parentId: 8,
               type: "link",
               url: "https://app.zeplin.io/client-b",
               title: "Zeplin Assets",
@@ -76,6 +86,7 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 11,
+          parentId: 1,
           type: "link",
           url: "https://calendar.google.com/work-schedule",
           title: "Work Calendar",
@@ -85,24 +96,28 @@ export const homeFolder: HomeFolder = {
     },
     {
       id: 12,
+      parentId: null,
       type: "folder",
       name: "Personal",
       description: "Personal interests and side projects",
       folderContents: [
         {
           id: 13,
+          parentId: 12,
           type: "folder",
           name: "Learning Resources",
           description: "Courses, tutorials, and educational content",
           folderContents: [
             {
               id: 14,
+              parentId: 13,
               type: "folder",
               name: "Web Development",
               description: null,
               folderContents: [
                 {
                   id: 15,
+                  parentId: 14,
                   type: "link",
                   url: "https://react.dev",
                   title: "React Documentation",
@@ -110,6 +125,7 @@ export const homeFolder: HomeFolder = {
                 },
                 {
                   id: 16,
+                  parentId: 14,
                   type: "link",
                   url: "https://typescript-lang.org/docs",
                   title: "TypeScript Handbook",
@@ -117,6 +133,7 @@ export const homeFolder: HomeFolder = {
                 },
                 {
                   id: 17,
+                  parentId: 14,
                   type: "link",
                   url: "https://nextjs.org/learn",
                   title: "Next.js Tutorial",
@@ -126,12 +143,14 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 18,
+              parentId: 13,
               type: "folder",
               name: "Design",
               description: "UI/UX and graphic design resources",
               folderContents: [
                 {
                   id: 19,
+                  parentId: 18,
                   type: "link",
                   url: "https://refactoringui.com",
                   title: "Refactoring UI",
@@ -139,6 +158,7 @@ export const homeFolder: HomeFolder = {
                 },
                 {
                   id: 20,
+                  parentId: 18,
                   type: "link",
                   url: "https://dribbble.com",
                   title: "Dribbble Inspiration",
@@ -150,12 +170,14 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 21,
+          parentId: 12,
           type: "folder",
           name: "Side Projects",
           description: null,
           folderContents: [
             {
               id: 22,
+              parentId: 21,
               type: "link",
               url: "https://github.com/myusername/recipe-app",
               title: "Recipe Manager App",
@@ -163,6 +185,7 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 23,
+              parentId: 21,
               type: "link",
               url: "https://vercel.com/my-portfolio",
               title: "Portfolio Website",
@@ -172,6 +195,7 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 24,
+          parentId: 12,
           type: "link",
           url: "https://spotify.com/playlist/coding-vibes",
           title: "Coding Playlist",
@@ -181,12 +205,14 @@ export const homeFolder: HomeFolder = {
     },
     {
       id: 25,
+      parentId: null,
       type: "folder",
       name: "Bookmarks",
       description: "Quick access links and tools",
       folderContents: [
         {
           id: 26,
+          parentId: 25,
           type: "link",
           url: "https://gmail.com",
           title: "Gmail",
@@ -194,6 +220,7 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 27,
+          parentId: 25,
           type: "link",
           url: "https://github.com",
           title: "GitHub",
@@ -201,6 +228,7 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 28,
+          parentId: 25,
           type: "link",
           url: "https://stackoverflow.com",
           title: "Stack Overflow",
@@ -208,12 +236,14 @@ export const homeFolder: HomeFolder = {
         },
         {
           id: 29,
+          parentId: 25,
           type: "folder",
           name: "Tools",
           description: "Development and productivity tools",
           folderContents: [
             {
               id: 30,
+              parentId: 29,
               type: "link",
               url: "https://excalidraw.com",
               title: "Excalidraw",
@@ -221,6 +251,7 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 31,
+              parentId: 29,
               type: "link",
               url: "https://regexr.com",
               title: "RegExr",
@@ -228,6 +259,7 @@ export const homeFolder: HomeFolder = {
             },
             {
               id: 32,
+              parentId: 29,
               type: "link",
               url: "https://caniuse.com",
               title: "Can I Use",
@@ -239,6 +271,7 @@ export const homeFolder: HomeFolder = {
     },
     {
       id: 33,
+      parentId: null,
       type: "link",
       url: "https://news.ycombinator.com",
       title: "Hacker News",
@@ -246,6 +279,7 @@ export const homeFolder: HomeFolder = {
     },
     {
       id: 34,
+      parentId: null,
       type: "link",
       url: "https://twitter.com",
       title: "Twitter",

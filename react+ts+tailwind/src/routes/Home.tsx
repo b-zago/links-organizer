@@ -8,6 +8,8 @@ import type { HomeFolder } from "../types/types";
 import { homeFolder } from "../utils/testData";
 import FolderItem from "../components/FolderItem";
 import { getFolderContentsById } from "../utils/extractFolder";
+import Breadcrumbs from "../components/Breadcrumbs";
+import { getBreadcrumbs } from "../utils/breadcrumbs";
 
 function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -15,6 +17,9 @@ function Home() {
     folderContents: null,
   });
   const [currentFolder, setCurrentFolder] = useState(0);
+  const [breadcrumbs, setBreadcrumbs] = useState<
+    { id: number; title: string }[]
+  >([{ id: 0, title: "Home" }]);
   const { itemsData, index, setItemsData } = useContext(DataContext);
 
   useEffect(() => {
@@ -28,8 +33,15 @@ function Home() {
 
   useEffect(() => {
     console.log(currentFolder);
-    if (currentFolder === 0) return;
+    if (currentFolder === 0) {
+      setBreadcrumbs([{ id: 0, title: "Home" }]);
+      setVisibleItems(itemsData);
+      return;
+    }
+
     const newItems = getFolderContentsById(index, currentFolder);
+    const newBreadcrumbs = getBreadcrumbs(index, currentFolder);
+    setBreadcrumbs(newBreadcrumbs);
     console.log(newItems);
     setVisibleItems({ folderContents: newItems });
   }, [currentFolder]);
@@ -37,6 +49,7 @@ function Home() {
   return (
     <>
       {isFormOpen && <AddItemModal openForm={setIsFormOpen} />}
+      <Breadcrumbs list={breadcrumbs} goToFolder={setCurrentFolder} />
       <div className="items-wrapper">
         {visibleItems.folderContents?.map((item, index) => {
           if (item.type === "link") {
