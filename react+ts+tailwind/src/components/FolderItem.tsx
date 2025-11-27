@@ -1,20 +1,16 @@
 import { faFolder } from "@fortawesome/free-regular-svg-icons";
 import { faFile } from "@fortawesome/free-regular-svg-icons";
-import type { LinkItemProps } from "../types/types";
+import type { FolderItemProps } from "../types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function LinkItem({ title, description, url }: LinkItemProps) {
-  const openForm = () => {
-    console.log(title);
-  };
-
+function FolderItem({ name, description, id, openFolder }: FolderItemProps) {
   return (
-    <a href={url} className="item-wrapper item">
+    <div onClick={() => openFolder(id)} className="item-wrapper item">
       <FontAwesomeIcon icon={faFile} />
-      <h3>{title}</h3>
+      <h3>Folder {name}</h3>
       {description && <p>{description}</p>}
-    </a>
+    </div>
   );
 }
 
-export default LinkItem;
+export default FolderItem;

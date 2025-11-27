@@ -1,0 +1,255 @@
+import type { HomeFolder } from "../types/types";
+
+export const homeFolder: HomeFolder = {
+  folderContents: [
+    {
+      id: 1,
+      type: "folder",
+      name: "Work Projects",
+      description: "All my professional work and client projects",
+      folderContents: [
+        {
+          id: 2,
+          type: "folder",
+          name: "Client A",
+          description: "E-commerce platform redesign",
+          folderContents: [
+            {
+              id: 3,
+              type: "link",
+              url: "https://figma.com/client-a-designs",
+              title: "Figma Design Files",
+              description: "Main design system and mockups",
+            },
+            {
+              id: 4,
+              type: "link",
+              url: "https://github.com/client-a/ecommerce",
+              title: "GitHub Repository",
+              description: null,
+            },
+            {
+              id: 5,
+              type: "folder",
+              name: "Documentation",
+              description: null,
+              folderContents: [
+                {
+                  id: 6,
+                  type: "link",
+                  url: "https://docs.google.com/technical-spec",
+                  title: "Technical Specification",
+                  description: "System architecture and API docs",
+                },
+                {
+                  id: 7,
+                  type: "link",
+                  url: "https://notion.so/client-a-meeting-notes",
+                  title: "Meeting Notes",
+                  description: "Weekly standup summaries",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 8,
+          type: "folder",
+          name: "Client B",
+          description: "Mobile app development for fitness tracking",
+          folderContents: [
+            {
+              id: 9,
+              type: "link",
+              url: "https://trello.com/client-b-board",
+              title: "Trello Board",
+              description: "Sprint planning and task management",
+            },
+            {
+              id: 10,
+              type: "link",
+              url: "https://app.zeplin.io/client-b",
+              title: "Zeplin Assets",
+              description: null,
+            },
+          ],
+        },
+        {
+          id: 11,
+          type: "link",
+          url: "https://calendar.google.com/work-schedule",
+          title: "Work Calendar",
+          description: "Client meetings and deadlines",
+        },
+      ],
+    },
+    {
+      id: 12,
+      type: "folder",
+      name: "Personal",
+      description: "Personal interests and side projects",
+      folderContents: [
+        {
+          id: 13,
+          type: "folder",
+          name: "Learning Resources",
+          description: "Courses, tutorials, and educational content",
+          folderContents: [
+            {
+              id: 14,
+              type: "folder",
+              name: "Web Development",
+              description: null,
+              folderContents: [
+                {
+                  id: 15,
+                  type: "link",
+                  url: "https://react.dev",
+                  title: "React Documentation",
+                  description: "Official React docs",
+                },
+                {
+                  id: 16,
+                  type: "link",
+                  url: "https://typescript-lang.org/docs",
+                  title: "TypeScript Handbook",
+                  description: "Complete TypeScript guide",
+                },
+                {
+                  id: 17,
+                  type: "link",
+                  url: "https://nextjs.org/learn",
+                  title: "Next.js Tutorial",
+                  description: null,
+                },
+              ],
+            },
+            {
+              id: 18,
+              type: "folder",
+              name: "Design",
+              description: "UI/UX and graphic design resources",
+              folderContents: [
+                {
+                  id: 19,
+                  type: "link",
+                  url: "https://refactoringui.com",
+                  title: "Refactoring UI",
+                  description: "Design tips for developers",
+                },
+                {
+                  id: 20,
+                  type: "link",
+                  url: "https://dribbble.com",
+                  title: "Dribbble Inspiration",
+                  description: null,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: 21,
+          type: "folder",
+          name: "Side Projects",
+          description: null,
+          folderContents: [
+            {
+              id: 22,
+              type: "link",
+              url: "https://github.com/myusername/recipe-app",
+              title: "Recipe Manager App",
+              description: "Full-stack recipe sharing platform",
+            },
+            {
+              id: 23,
+              type: "link",
+              url: "https://vercel.com/my-portfolio",
+              title: "Portfolio Website",
+              description: "Personal portfolio deployment",
+            },
+          ],
+        },
+        {
+          id: 24,
+          type: "link",
+          url: "https://spotify.com/playlist/coding-vibes",
+          title: "Coding Playlist",
+          description: "Lo-fi beats for deep work sessions",
+        },
+      ],
+    },
+    {
+      id: 25,
+      type: "folder",
+      name: "Bookmarks",
+      description: "Quick access links and tools",
+      folderContents: [
+        {
+          id: 26,
+          type: "link",
+          url: "https://gmail.com",
+          title: "Gmail",
+          description: null,
+        },
+        {
+          id: 27,
+          type: "link",
+          url: "https://github.com",
+          title: "GitHub",
+          description: null,
+        },
+        {
+          id: 28,
+          type: "link",
+          url: "https://stackoverflow.com",
+          title: "Stack Overflow",
+          description: "Programming Q&A",
+        },
+        {
+          id: 29,
+          type: "folder",
+          name: "Tools",
+          description: "Development and productivity tools",
+          folderContents: [
+            {
+              id: 30,
+              type: "link",
+              url: "https://excalidraw.com",
+              title: "Excalidraw",
+              description: "Whiteboard for sketching diagrams",
+            },
+            {
+              id: 31,
+              type: "link",
+              url: "https://regexr.com",
+              title: "RegExr",
+              description: "Regex testing and learning",
+            },
+            {
+              id: 32,
+              type: "link",
+              url: "https://caniuse.com",
+              title: "Can I Use",
+              description: "Browser support tables",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      id: 33,
+      type: "link",
+      url: "https://news.ycombinator.com",
+      title: "Hacker News",
+      description: "Tech news and discussions",
+    },
+    {
+      id: 34,
+      type: "link",
+      url: "https://twitter.com",
+      title: "Twitter",
+      description: null,
+    },
+  ],
+};

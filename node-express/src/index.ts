@@ -61,7 +61,6 @@ app.post("/login", async (req: Request, res: Response) => {
 
 app.get("/auth/verify", authenticateToken, (req: Request, res: Response) => {
   res.status(200).json({
-    authenticated: true,
     user: req.user,
   });
 });

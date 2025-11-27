@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 .items-wrapper {
-  @apply w-[90%] mt-5 flex justify-evenly;
+  @apply w-[90%] mt-5 flex justify-start gap-5;
 }
 
 .item {
-  @apply w-[20%] min-h-[75px] flex justify-center items-center cursor-pointer;
+  @apply w-[20%] min-h-[75px] flex justify-center items-center flex-col cursor-pointer border;
 }
 
 .add-item-wrapper {

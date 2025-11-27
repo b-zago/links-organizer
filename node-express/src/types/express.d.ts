@@ -9,7 +9,7 @@ interface UserJwtPayload extends JwtPayload {
 declare global {
   namespace Express {
     interface Request {
-      user?: UserJwtPayload;
+      user?: UserJwtPayload | null;
     }
   }
 }

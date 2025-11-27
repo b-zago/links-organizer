@@ -18,9 +18,10 @@ export const authenticateToken = (
     process.env.JWT_SECRET as string,
     (err: VerifyErrors | null, user: string | JwtPayload | undefined) => {
       if (err) {
-        return res.status(403).json({ authenticated: false });
+        req.user = null;
+      } else {
+        req.user = user as UserJwtPayload;
       }
-      req.user = user as UserJwtPayload;
       next();
     }
   );

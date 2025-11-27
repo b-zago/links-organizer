@@ -3,22 +3,22 @@ import "./css/AddItemModal.css";
 
 type ModalMode = "folder" | "link";
 
-interface AddItemModalProps {
+type AddItemModalProps = {
   openForm: React.Dispatch<React.SetStateAction<boolean>>;
-}
+};
 
-interface FolderData {
+type FolderData = {
   type: "folder";
   name: string;
   description?: string;
-}
+};
 
-interface LinkData {
+type LinkData = {
   type: "link";
   url: string;
   title: string;
   description?: string;
-}
+};
 
 const AddItemModal: React.FC<AddItemModalProps> = ({ openForm }) => {
   const [mode, setMode] = useState<ModalMode>("folder");
