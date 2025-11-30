@@ -50,7 +50,7 @@ export function authVerify(
     .then((data: AuthVerifyResponse) => {
       console.log(data);
 
-      if (data.authenticated) {
+      if (data.user) {
         setUserData({
           username: data.user.username,
           id: data.user.id,

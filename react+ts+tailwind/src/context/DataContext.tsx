@@ -14,7 +14,7 @@ export function DataContextProvider({ children }: { children: ReactNode }) {
   const [itemsData, setItemsData] = useState<HomeFolder>({
     folderContents: null,
   });
-  const [index, setIndex] = useState<Map<number, Folder | Link>>(new Map());
+  const [index, setIndex] = useState<Map<number, Folder>>(new Map());
 
   useEffect(() => {
     if (itemsData.folderContents === null) return;

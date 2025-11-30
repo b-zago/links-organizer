@@ -15,6 +15,7 @@ export function getBreadcrumbs(
   // Walk up the tree using parentId
   while (currentId !== null) {
     const item = index.get(currentId);
+
     if (!item) break;
 
     const title = item.type === "folder" ? item.name : item.title;
@@ -23,6 +24,7 @@ export function getBreadcrumbs(
     currentId = item.parentId; // Read parentId from the item!
   }
 
+  console.log(path);
   // Add Home at the beginning
   return [{ id: 0, title: "Home" }, ...path];
 }

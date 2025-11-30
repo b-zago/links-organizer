@@ -1,15 +1,13 @@
 import type { Folder, HomeFolder, Link } from "../types/types";
 
 // Build index once - O(n) time
-export function buildFolderIndex(
-  homeFolder: HomeFolder
-): Map<number, Folder | Link> {
-  const index = new Map<number, Folder | Link>();
+export function buildFolderIndex(homeFolder: HomeFolder): Map<number, Folder> {
+  const index = new Map<number, Folder>();
 
   function indexItems(items: Array<Folder | Link>) {
     for (const item of items) {
-      index.set(item.id, item);
       if (item.type === "folder") {
+        index.set(item.id, item);
         indexItems(item.folderContents);
       }
     }
@@ -22,14 +20,10 @@ export function buildFolderIndex(
   return index;
 }
 
-// Get folder's contents by ID - O(1) time
 export function getFolderContentsById(
-  index: Map<number, Folder | Link>,
+  index: Map<number, Folder>,
   id: number
 ): Array<Folder | Link> | null {
   const item = index.get(id);
-  if (item?.type === "folder") {
-    return item.folderContents;
-  }
-  return null;
+  return item ? item.folderContents : null;
 }

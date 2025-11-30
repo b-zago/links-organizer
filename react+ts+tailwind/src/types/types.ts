@@ -54,7 +54,7 @@ export type HomeFolder = {
 
 export type DataContextType = {
   itemsData: HomeFolder;
-  index: Map<number, Folder | Link>;
+  index: Map<number, Folder>;
   setItemsData: React.Dispatch<React.SetStateAction<HomeFolder>>;
 };
 

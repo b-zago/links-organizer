@@ -10,6 +10,7 @@ import FolderItem from "../components/FolderItem";
 import { getFolderContentsById } from "../utils/extractFolder";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { getBreadcrumbs } from "../utils/breadcrumbs";
+import { getItems } from "../utils/fetches/items";
 
 function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -23,32 +24,44 @@ function Home() {
   const { itemsData, index, setItemsData } = useContext(DataContext);
 
   useEffect(() => {
-    //fetch from backend here - now for dev do on test
-    setItemsData(homeFolder);
+    if (!itemsData.folderContents) {
+      getItems()
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message);
+          }
+          return data;
+        })
+        .then((data) => {
+          console.log(data);
+          setItemsData(data);
+        })
+        .catch((data) => console.error(data.message));
+    }
   }, []);
 
+  // Combine both effects into one
   useEffect(() => {
-    setVisibleItems(itemsData);
-  }, [itemsData]);
+    if (!itemsData.folderContents) return;
 
-  useEffect(() => {
-    console.log(currentFolder);
     if (currentFolder === 0) {
       setBreadcrumbs([{ id: 0, title: "Home" }]);
       setVisibleItems(itemsData);
-      return;
+    } else {
+      const newItems = getFolderContentsById(index, currentFolder);
+      const newBreadcrumbs = getBreadcrumbs(index, currentFolder);
+      setBreadcrumbs(newBreadcrumbs);
+      setVisibleItems({ folderContents: newItems });
     }
-
-    const newItems = getFolderContentsById(index, currentFolder);
-    const newBreadcrumbs = getBreadcrumbs(index, currentFolder);
-    setBreadcrumbs(newBreadcrumbs);
-    console.log(newItems);
-    setVisibleItems({ folderContents: newItems });
-  }, [currentFolder]);
+  }, [itemsData, currentFolder, index]);
 
   return (
     <>
-      {isFormOpen && <AddItemModal openForm={setIsFormOpen} />}
+      {isFormOpen && (
+        <AddItemModal openForm={setIsFormOpen} parentFolderID={currentFolder} />
+      )}
       <Breadcrumbs list={breadcrumbs} goToFolder={setCurrentFolder} />
       <div className="items-wrapper">
         {visibleItems.folderContents?.map((item, index) => {

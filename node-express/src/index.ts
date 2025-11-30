@@ -7,6 +7,9 @@ import { login, register } from "./auth/auth.js";
 
 import jwt from "jsonwebtoken";
 import { authenticateToken } from "./auth/middleware.js";
+import { addFolder } from "./api/addFolder.js";
+import type { UserJwtPayload } from "./types/express.js";
+import { getFolderTree } from "./api/getTree.js";
 
 // Create a new express application instance
 const app = express();
@@ -64,6 +67,27 @@ app.get("/auth/verify", authenticateToken, (req: Request, res: Response) => {
     user: req.user,
   });
 });
+
+app.post(
+  "/add/folder",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const newFolder = await addFolder(req.body, req.user as UserJwtPayload);
+
+    res.status(200).json(newFolder);
+  }
+);
+
+app.get(
+  "/get/items",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    if (req.user) {
+      const items = await getFolderTree(req.user.id);
+      res.status(200).json(items);
+    }
+  }
+);
 
 // Start the Express server
 app.listen(port, () => {
