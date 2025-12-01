@@ -10,6 +10,7 @@ import { authenticateToken } from "./auth/middleware.js";
 import { addFolder } from "./api/addFolder.js";
 import type { UserJwtPayload } from "./types/express.js";
 import { getFolderTree } from "./api/getTree.js";
+import { addLink } from "./api/addLink.js";
 
 // Create a new express application instance
 const app = express();
@@ -75,6 +76,16 @@ app.post(
     const newFolder = await addFolder(req.body, req.user as UserJwtPayload);
 
     res.status(200).json(newFolder);
+  }
+);
+
+app.post(
+  "/add/link",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const newLink = await addLink(req.body, req.user as UserJwtPayload);
+
+    res.status(200).json(newLink);
   }
 );
 

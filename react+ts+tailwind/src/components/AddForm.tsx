@@ -1,8 +1,8 @@
 import React, { useContext, useState } from "react";
 import "./css/AddItemModal.css";
 import { DataContext } from "../context/DataContext";
-import { addFolder } from "../utils/fetches/items";
-import type { Folder } from "../types/types";
+import { addFolder, addLink } from "../utils/fetches/items";
+import type { Folder, Link } from "../types/types";
 
 type ModalMode = "folder" | "link";
 
@@ -39,7 +39,7 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
         name: folderName,
         description: description || null,
       });
-      //add to db and return here only added object (because ig we need an id from db to use) and then modify the one that already exists in memory
+
       addFolder(folderName, description, parentFolderID)
         .then(async (res) => {
           const data = await res.json();
@@ -93,16 +93,61 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
 
             return { ...prevData };
           });
-        }) //show toast message here
-        .catch((data) => console.error(data.message)); //show toast message here;
+        })
+        .catch((data) => console.error(data.message));
     } else {
       console.log({
         type: "link",
         url,
         title,
         description: description || null,
+        parentFolderID: parentFolderID,
       });
-      //add to db and return here only added object and then modify the one that already exists in memory
+
+      addLink(url, title, description, parentFolderID)
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message);
+          }
+          return data;
+        })
+        .then((data) => {
+          console.log(data);
+          const newLink: Link = {
+            id: data.id,
+            url: data.url,
+            title: data.title,
+            parentId: data.folder_id,
+            type: "link",
+            description: data.description,
+          };
+
+          setItemsData((prevData) => {
+            // Links can't be at root level (parentFolderID can't be 0)
+            const parentFolder = index.get(parentFolderID);
+
+            if (!parentFolder || parentFolder.type !== "folder") {
+              console.error("Parent folder not found in index");
+              return prevData;
+            }
+
+            // Check if link already exists in parent
+            const exists = parentFolder.folderContents.some(
+              (item) => item.id === newLink.id
+            );
+            if (exists) {
+              console.log("Link already exists, skipping");
+              return prevData;
+            }
+
+            parentFolder.folderContents.push(newLink);
+
+            return { ...prevData };
+          });
+        })
+        .catch((data) => console.error(data.message));
     }
 
     // Reset
