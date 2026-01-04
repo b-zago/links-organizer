@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import "./css/AddItemModal.css";
 import { DataContext } from "../context/DataContext";
+import { UserContext } from "../context/UserContext";
 import { addFolder, addLink } from "../utils/fetches/items";
 import type { Folder, Link } from "../types/types";
 
@@ -22,9 +23,15 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
   const [description, setDescription] = useState("");
 
   const { index, setItemsData } = useContext(DataContext);
+  const { userData } = useContext(UserContext);
 
   const onClose = () => {
     openForm(false);
+  };
+
+  // Generate a temporary negative ID for client-side items
+  const generateTempId = () => {
+    return -Math.floor(Math.random() * 1000000);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,6 +40,69 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
     if (mode === "folder" && !folderName) return;
     if (mode === "link" && (!url || !title)) return;
 
+    // If user is NOT signed in, handle everything in memory
+    if (!userData) {
+      if (mode === "folder") {
+        const newFolder: Folder = {
+          id: generateTempId(),
+          name: folderName,
+          parentId: parentFolderID === 0 ? null : parentFolderID,
+          type: "folder",
+          description: description || null,
+          folderContents: [],
+        };
+
+        setItemsData((prevData) => {
+          if (parentFolderID === 0) {
+            return {
+              folderContents: [...(prevData.folderContents || []), newFolder],
+            };
+          }
+
+          const parentFolder = index.get(parentFolderID);
+
+          if (!parentFolder || parentFolder.type !== "folder") {
+            console.error("Parent folder not found in index");
+            return prevData;
+          }
+
+          parentFolder.folderContents.push(newFolder);
+          return { ...prevData };
+        });
+      } else {
+        // Adding link in memory
+        const newLink: Link = {
+          id: generateTempId(),
+          url: url,
+          title: title,
+          parentId: parentFolderID,
+          type: "link",
+          description: description || null,
+        };
+
+        setItemsData((prevData) => {
+          const parentFolder = index.get(parentFolderID);
+
+          if (!parentFolder || parentFolder.type !== "folder") {
+            console.error("Parent folder not found in index");
+            return prevData;
+          }
+
+          parentFolder.folderContents.push(newLink);
+          return { ...prevData };
+        });
+      }
+
+      // Reset and close
+      setFolderName("");
+      setUrl("");
+      setTitle("");
+      setDescription("");
+      onClose();
+      return;
+    }
+
+    // User IS signed in - make API calls
     if (mode === "folder") {
       console.log({
         type: "folder",
@@ -62,7 +132,6 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
 
           setItemsData((prevData) => {
             if (parentFolderID === 0) {
-              // Check if folder already exists at root level
               const exists = prevData.folderContents?.some(
                 (item) => item.id === newFolder.id
               );
@@ -80,7 +149,6 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
               return prevData;
             }
 
-            // Check if folder already exists in parent
             const exists = parentFolder.folderContents.some(
               (item) => item.id === newFolder.id
             );
@@ -90,7 +158,6 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
             }
 
             parentFolder.folderContents.push(newFolder);
-
             return { ...prevData };
           });
         })
@@ -125,7 +192,6 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
           };
 
           setItemsData((prevData) => {
-            // Links can't be at root level (parentFolderID can't be 0)
             const parentFolder = index.get(parentFolderID);
 
             if (!parentFolder || parentFolder.type !== "folder") {
@@ -133,7 +199,6 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
               return prevData;
             }
 
-            // Check if link already exists in parent
             const exists = parentFolder.folderContents.some(
               (item) => item.id === newLink.id
             );
@@ -143,7 +208,6 @@ const AddItemModal: React.FC<AddItemModalProps> = ({
             }
 
             parentFolder.folderContents.push(newLink);
-
             return { ...prevData };
           });
         })
