@@ -5,12 +5,13 @@ import AddItemModal from "../components/AddForm";
 import LinkItem from "../components/LinkItem";
 import { DataContext } from "../context/DataContext";
 import type { HomeFolder } from "../types/types";
-import { homeFolder } from "../utils/testData";
 import FolderItem from "../components/FolderItem";
 import { getFolderContentsById } from "../utils/extractFolder";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { getBreadcrumbs } from "../utils/breadcrumbs";
 import { getItems } from "../utils/fetches/items";
+import Spinner from "../components/Spinner";
+import { UserContext } from "../context/UserContext";
 
 function Home() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -21,10 +22,13 @@ function Home() {
   const [breadcrumbs, setBreadcrumbs] = useState<
     { id: number; title: string }[]
   >([{ id: 0, title: "Home" }]);
+  const [isLoading, setIsLoading] = useState(false);
   const { itemsData, index, setItemsData } = useContext(DataContext);
+  const { userData } = useContext(UserContext);
 
   useEffect(() => {
-    if (!itemsData.folderContents) {
+    if (!itemsData.folderContents && userData) {
+      setIsLoading(true);
       getItems()
         .then(async (res) => {
           const data = await res.json();
@@ -38,9 +42,12 @@ function Home() {
           console.log(data);
           setItemsData(data);
         })
-        .catch((data) => console.error(data.message));
+        .catch((data) => console.error(data.message))
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
-  }, []);
+  }, [userData]);
 
   // Combine both effects into one
   useEffect(() => {
@@ -63,30 +70,47 @@ function Home() {
         <AddItemModal openForm={setIsFormOpen} parentFolderID={currentFolder} />
       )}
       <Breadcrumbs list={breadcrumbs} goToFolder={setCurrentFolder} />
-      <div className="items-wrapper">
-        {visibleItems.folderContents?.map((item, index) => {
-          if (item.type === "link") {
+
+      {isLoading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "200px",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+        >
+          <Spinner size={40} color="currentColor" borderWidth={3} />
+          <p>Loading your folders...</p>
+        </div>
+      ) : (
+        <div className="items-wrapper">
+          {visibleItems.folderContents?.map((item, index) => {
+            if (item.type === "link") {
+              return (
+                <LinkItem
+                  key={index}
+                  title={item.title}
+                  description={item.description}
+                  url={item.url}
+                />
+              );
+            }
             return (
-              <LinkItem
+              <FolderItem
                 key={index}
-                title={item.title}
+                name={item.name}
                 description={item.description}
-                url={item.url}
+                id={item.id}
+                openFolder={setCurrentFolder}
               />
             );
-          }
-          return (
-            <FolderItem
-              key={index}
-              name={item.name}
-              description={item.description}
-              id={item.id}
-              openFolder={setCurrentFolder}
-            />
-          );
-        })}
-        <AddItem openForm={setIsFormOpen} />
-      </div>
+          })}
+          <AddItem openForm={setIsFormOpen} />
+        </div>
+      )}
     </>
   );
 }

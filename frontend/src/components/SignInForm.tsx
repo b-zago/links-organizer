@@ -3,6 +3,7 @@ import { authVerify, login, register } from "../utils/fetches/userAuth";
 import { UserContext } from "../context/UserContext";
 import type { AuthMessage } from "../types/types";
 import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
 
 function SignInForm() {
   const { setUserData } = useContext(UserContext);
@@ -14,10 +15,16 @@ function SignInForm() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(""); // Clear any previous errors
+    setIsLoading(true); // Start loading
+
     if (signIn) {
-      //some validation
+      // Login flow
       login(username, password)
         .then(async (res) => {
           const data = await res.json();
@@ -28,13 +35,18 @@ function SignInForm() {
           return data;
         })
         .then((data: AuthMessage) => {
-          console.log(data.message); //show toast message here
+          console.log(data.message);
           authVerify(setUserData);
           navigate("/");
         })
-        .catch((data: AuthMessage) => console.error(data.message)); //show toast message here
+        .catch((error: Error) => {
+          setErrorMessage(error.message || "Login failed. Please try again.");
+        })
+        .finally(() => {
+          setIsLoading(false); // Stop loading
+        });
     } else {
-      //some validation
+      // Register flow
       register(username, email, password)
         .then(async (res) => {
           const data = await res.json();
@@ -44,8 +56,32 @@ function SignInForm() {
           }
           return data;
         })
-        .then((data: AuthMessage) => console.log(data.message)) //show toast message here
-        .catch((data: AuthMessage) => console.error(data.message)); //show toast message here
+        .then((data: AuthMessage) => {
+          console.log(data.message);
+          // After successful registration, automatically log in
+          return login(username, password);
+        })
+        .then(async (res) => {
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message);
+          }
+          return data;
+        })
+        .then((data: AuthMessage) => {
+          console.log(data.message);
+          authVerify(setUserData);
+          navigate("/");
+        })
+        .catch((error: Error) => {
+          setErrorMessage(
+            error.message || "Registration failed. Please try again."
+          );
+        })
+        .finally(() => {
+          setIsLoading(false); // Stop loading
+        });
     }
   };
 
@@ -79,11 +115,41 @@ function SignInForm() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button>Sign {signIn ? "In" : "Up"}</button>
+
+      {errorMessage && (
+        <div style={{ color: "red", marginTop: "10px", marginBottom: "10px" }}>
+          {errorMessage}
+        </div>
+      )}
+
+      <button disabled={isLoading}>
+        {isLoading ? (
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              color: "inherit",
+            }}
+          >
+            <Spinner size={16} color="white" />
+            Loading...
+          </span>
+        ) : (
+          `Sign ${signIn ? "In" : "Up"}`
+        )}
+      </button>
       <span>
         {signIn ? "No account yet?" : "Already have an account?"}
         <br />
-        <a onClick={() => setSignIn(!signIn)}>Sign {!signIn ? "In" : "Up"}!</a>
+        <a
+          onClick={() => {
+            setSignIn(!signIn);
+            setErrorMessage(""); // Clear error when switching modes
+          }}
+        >
+          Sign {!signIn ? "In" : "Up"}!
+        </a>
       </span>
     </form>
   );
