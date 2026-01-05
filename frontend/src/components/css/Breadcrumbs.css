@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+.breadcrumbs-container {
+  @apply w-[90%] mt-5 mb-3 flex items-center gap-2 flex-wrap;
+  @apply px-4 py-3 rounded-lg;
+  @apply bg-[var(--dark-blue)]/30 border-2 border-[var(--dark-green)];
+}
+
+.breadcrumb-item-wrapper {
+  @apply flex items-center gap-2;
+}
+
+.breadcrumb-item {
+  @apply text-[var(--light-blue)] font-semibold cursor-pointer;
+  @apply transition-all;
+  @apply hover:text-[var(--light-green)] hover:underline;
+  @apply text-sm sm:text-base;
+}
+
+.breadcrumb-item.active {
+  @apply text-[var(--light-green)] cursor-default;
+  @apply hover:no-underline;
+}
+
+.breadcrumb-separator {
+  @apply text-[var(--light-blue)] font-bold;
+  @apply select-none;
+  @apply text-sm sm:text-base;
+}

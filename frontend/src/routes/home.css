@@ -1,13 +1,41 @@
 @import "tailwindcss";
 
 .items-wrapper {
-  @apply w-[90%] mt-5 flex justify-start gap-5;
+  @apply w-[90%] mt-5 flex flex-wrap justify-start gap-5;
 }
 
 .item {
-  @apply w-[20%] min-h-[75px] flex justify-center items-center flex-col cursor-pointer border;
+  @apply w-full sm:w-[calc(50%-10px)] lg:w-[calc(20%-16px)] min-h-[120px];
+  @apply flex justify-center items-center flex-col gap-2 cursor-pointer;
+  @apply border-2 border-[var(--dark-green)] rounded-lg p-4;
+  @apply bg-[var(--dark-blue)]/30 transition-all;
+  @apply hover:border-[var(--light-blue)] hover:bg-[var(--dark-blue)]/50;
+  @apply hover:scale-105 hover:shadow-lg;
+}
+
+.item h3 {
+  @apply text-[var(--light-green)] font-semibold text-center text-sm sm:text-base;
+  @apply m-0 break-words w-full;
+}
+
+.item p {
+  @apply text-[var(--light-blue)]/70 text-xs text-center;
+  @apply m-0 line-clamp-2 w-full;
+}
+
+.item svg {
+  @apply text-[var(--light-green)] text-2xl sm:text-3xl;
 }
 
 .add-item-wrapper {
-  @apply border-1 border-dashed;
+  @apply border-2 border-dashed border-[var(--light-blue)]/50;
+  @apply hover:border-[var(--light-green)] hover:bg-[var(--light-blue)]/10;
+}
+
+.add-item-wrapper svg {
+  @apply text-[var(--light-blue)];
+}
+
+.add-item-wrapper h3 {
+  @apply text-[var(--light-blue)];
 }
