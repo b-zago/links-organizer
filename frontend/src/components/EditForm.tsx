@@ -2,24 +2,43 @@ import React, { useContext, useState } from "react";
 import "./css/AddItemModal.css";
 import { DataContext } from "../context/DataContext";
 import { UserContext } from "../context/UserContext";
-import { addFolder, addLink } from "../utils/fetches/items";
+import {
+  addFolder,
+  addLink,
+  editFolder,
+  editLink,
+} from "../utils/fetches/items";
 import type { Folder, Link } from "../types/types";
 
 type ModalMode = "folder" | "link";
 
-type AddItemModalProps = {
+type EditItemModalProps = {
   openForm: React.Dispatch<React.SetStateAction<boolean>>;
+  itemID: number;
   parentFolderID: number;
+  mode: ModalMode;
+  currentFolderName: string;
+  currentURL: string;
+  currentTitle: string;
+  currentDescription: string;
 };
 
-function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
-  const [mode, setMode] = useState<ModalMode>("folder");
-  const [folderName, setFolderName] = useState("");
-  const [url, setUrl] = useState("");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
+function EditItemModal({
+  openForm,
+  itemID,
+  parentFolderID,
+  mode,
+  currentFolderName,
+  currentURL,
+  currentTitle,
+  currentDescription,
+}: EditItemModalProps) {
+  const [folderName, setFolderName] = useState(currentFolderName);
+  const [url, setUrl] = useState(currentURL);
+  const [title, setTitle] = useState(currentTitle);
+  const [description, setDescription] = useState(currentDescription);
 
-  const { index, setItemsData } = useContext(DataContext);
+  const { index, itemsData, setItemsData } = useContext(DataContext);
   const { userData } = useContext(UserContext);
 
   const onClose = () => {
@@ -49,65 +68,59 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
           folderContents: [],
         };
 
+        //do i really need to use setItemsData here?
         setItemsData((prevData) => {
+          let folder = null;
           if (parentFolderID === 0) {
-            return {
-              folderContents: [...(prevData.folderContents || []), newFolder],
-            };
+            folder = itemsData;
+          } else {
+            folder = index.get(parentFolderID);
           }
-
-          const parentFolder = index.get(parentFolderID);
-
-          if (!parentFolder || parentFolder.type !== "folder") {
-            console.error("Parent folder not found in index");
+          if (!folder) {
+            console.error("Folder not found!");
             return prevData;
           }
+          for (const item of folder.folderContents as Folder[]) {
+            if (item.id === itemID) {
+              item.description = description;
+              item.name = folderName;
 
-          const exists = parentFolder.folderContents.some(
-            (item) => item.id === newFolder.id
-          );
-          if (exists) {
-            console.log("Folder already exists, skipping");
-            return prevData;
+              break;
+            }
           }
-
-          parentFolder.folderContents.push(newFolder);
           return { ...prevData };
         });
       } else {
-        // Adding link in memory
-        const newLink: Link = {
-          id: generateTempId(),
-          url: url,
-          title: title,
-          parentId: parentFolderID,
-          type: "link",
-          description: description || null,
-        };
-
+        // Editing link in memory
+        //do i really need to use setItemsData here?
         setItemsData((prevData) => {
+          let folder = null;
           if (parentFolderID === 0) {
-            return {
-              folderContents: [...(prevData.folderContents || []), newLink],
-            };
+            folder = itemsData;
+          } else {
+            folder = index.get(parentFolderID);
           }
 
-          const parentFolder = index.get(parentFolderID);
+          console.dir(folder);
 
-          if (!parentFolder || parentFolder.type !== "folder") {
-            console.error("Parent folder not found in index");
+          //   if (!parentFolder || parentFolder.type !== "folder") {
+          //     console.error("Parent folder not found in index");
+          //     return prevData;
+          //   }
+          if (!folder) {
+            console.error("Folder not found!");
             return prevData;
           }
 
-          const exists = parentFolder.folderContents.some(
-            (item) => item.id === newLink.id
-          );
-          if (exists) {
-            console.log("Folder already exists, skipping");
-            return prevData;
+          for (const item of folder.folderContents as Link[]) {
+            if (item.id === itemID) {
+              item.description = description;
+              item.url = url;
+              item.title = title;
+              break;
+            }
           }
 
-          parentFolder.folderContents.push(newLink);
           return { ...prevData };
         });
       }
@@ -129,7 +142,7 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
         description: description || null,
       });
 
-      addFolder(folderName, description, parentFolderID)
+      editFolder(folderName, description, parentFolderID)
         .then(async (res) => {
           const data = await res.json();
 
@@ -190,7 +203,7 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
         parentFolderID: parentFolderID,
       });
 
-      addLink(url, title, description, parentFolderID)
+      editLink(url, title, description, parentFolderID)
         .then(async (res) => {
           const data = await res.json();
 
@@ -252,7 +265,7 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
       <div className="modal-container">
         <div className="modal-header">
           <h2 className="modal-title">
-            {mode === "folder" ? "Add Folder" : "Add Link"}
+            {mode === "folder" ? "Edit Folder" : "Edit Link"}
           </h2>
           <button className="modal-close" onClick={onClose} type="button">
             ×
@@ -263,14 +276,14 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
           <button
             type="button"
             className={`mode-button ${mode === "folder" ? "active" : ""}`}
-            onClick={() => setMode("folder")}
+            onClick={() => {}}
           >
             Folder
           </button>
           <button
             type="button"
             className={`mode-button ${mode === "link" ? "active" : ""}`}
-            onClick={() => setMode("link")}
+            onClick={() => {}}
           >
             Link
           </button>
@@ -355,4 +368,4 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
   );
 }
 
-export default AddItemModal;
+export default EditItemModal;

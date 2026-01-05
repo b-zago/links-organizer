@@ -19,6 +19,13 @@ export type LinkItemProps = {
   title: string;
   description: string | null;
   url: string;
+  id: number;
+  showEditForm: (
+    id: number,
+    title: string,
+    description: string,
+    url: string
+  ) => void;
 };
 
 export type FolderItemProps = {
@@ -26,6 +33,16 @@ export type FolderItemProps = {
   description: string | null;
   id: number;
   openFolder: React.Dispatch<React.SetStateAction<number>>;
+  showEditForm: (id: number, folderName: string, description: string) => void;
+};
+
+export type EditFormDataType = {
+  mode: "folder" | "link";
+  currentFolderName: string;
+  currentURL: string;
+  currentTitle: string;
+  currentDescription: string;
+  itemID: number;
 };
 
 //folders n shit

@@ -10,9 +10,9 @@ export function addFolder(
     },
     credentials: "include", //tells browser to accept cookies
     body: JSON.stringify({
-      folderName: folderName,
-      description: description,
-      parentFolderID: parentFolderID,
+      folderName,
+      description,
+      parentFolderID,
     }),
   });
 }
@@ -30,10 +30,10 @@ export function addLink(
     },
     credentials: "include", //tells browser to accept cookies
     body: JSON.stringify({
-      url: url,
-      title: title,
-      description: description,
-      parentFolderID: parentFolderID,
+      url,
+      title,
+      description,
+      parentFolderID,
     }),
   });
 }
@@ -45,5 +45,45 @@ export function getItems() {
       "Content-Type": "application/json",
     },
     credentials: "include", //tells browser to accept cookies
+  });
+}
+
+export function editFolder(
+  folderName: string,
+  description: string | null,
+  id: number
+) {
+  return fetch("http://localhost:3000/edit/folder", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", //tells browser to accept cookies
+    body: JSON.stringify({
+      folderName,
+      description,
+      id,
+    }),
+  });
+}
+
+export function editLink(
+  url: string,
+  title: string,
+  description: string | null,
+  id: number
+) {
+  return fetch("http://localhost:3000/edit/link", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", //tells browser to accept cookies
+    body: JSON.stringify({
+      url,
+      title,
+      description,
+      id,
+    }),
   });
 }

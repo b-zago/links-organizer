@@ -4,7 +4,7 @@ import "./home.css";
 import AddItemModal from "../components/AddForm";
 import LinkItem from "../components/LinkItem";
 import { DataContext } from "../context/DataContext";
-import type { HomeFolder } from "../types/types";
+import type { EditFormDataType, HomeFolder } from "../types/types";
 import FolderItem from "../components/FolderItem";
 import { getFolderContentsById } from "../utils/extractFolder";
 import Breadcrumbs from "../components/Breadcrumbs";
@@ -12,9 +12,19 @@ import { getBreadcrumbs } from "../utils/breadcrumbs";
 import { getItems } from "../utils/fetches/items";
 import Spinner from "../components/Spinner";
 import { UserContext } from "../context/UserContext";
+import EditItemModal from "../components/EditForm";
 
 function Home() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
+  const [isEditFormOpen, setIsEditFormOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState<EditFormDataType>({
+    itemID: 0,
+    mode: "folder",
+    currentDescription: "",
+    currentTitle: "",
+    currentFolderName: "",
+    currentURL: "",
+  });
   const [visibleItems, setVisibleItems] = useState<HomeFolder>({
     folderContents: null,
   });
@@ -64,10 +74,58 @@ function Home() {
     }
   }, [itemsData, currentFolder, index]);
 
+  const showEditFormLink = (
+    id: number,
+    title: string,
+    description: string,
+    url: string
+  ) => {
+    setEditFormData({
+      mode: "link",
+      itemID: id,
+      currentTitle: title,
+      currentDescription: description,
+      currentURL: url,
+      currentFolderName: "",
+    });
+    setIsEditFormOpen(true);
+  };
+
+  const showEditFormFolder = (
+    id: number,
+    folderName: string,
+    description: string
+  ) => {
+    setEditFormData({
+      mode: "folder",
+      itemID: id,
+      currentTitle: "",
+      currentDescription: description,
+      currentURL: "",
+      currentFolderName: folderName,
+    });
+    setIsEditFormOpen(true);
+  };
+
   return (
     <>
-      {isFormOpen && (
-        <AddItemModal openForm={setIsFormOpen} parentFolderID={currentFolder} />
+      {isAddFormOpen && (
+        <AddItemModal
+          openForm={setIsAddFormOpen}
+          parentFolderID={currentFolder}
+        />
+      )}
+      {isEditFormOpen && (
+        <EditItemModal
+          openForm={setIsEditFormOpen}
+          parentFolderID={currentFolder}
+          itemID={editFormData.itemID}
+          mode={editFormData.mode}
+          currentDescription={editFormData.currentDescription}
+          currentFolderName={editFormData.currentFolderName}
+          currentTitle={editFormData.currentTitle}
+          currentURL={editFormData.currentURL}
+        />
       )}
       <Breadcrumbs list={breadcrumbs} goToFolder={setCurrentFolder} />
 
@@ -95,6 +153,8 @@ function Home() {
                   title={item.title}
                   description={item.description}
                   url={item.url}
+                  id={item.id}
+                  showEditForm={showEditFormLink}
                 />
               );
             }
@@ -105,10 +165,11 @@ function Home() {
                 description={item.description}
                 id={item.id}
                 openFolder={setCurrentFolder}
+                showEditForm={showEditFormFolder}
               />
             );
           })}
-          <AddItem openForm={setIsFormOpen} />
+          <AddItem openForm={setIsAddFormOpen} />
         </div>
       )}
     </>
