@@ -59,15 +59,6 @@ function EditItemModal({
     // If user is NOT signed in, handle everything in memory
     if (!userData) {
       if (mode === "folder") {
-        const newFolder: Folder = {
-          id: generateTempId(),
-          name: folderName,
-          parentId: parentFolderID === 0 ? null : parentFolderID,
-          type: "folder",
-          description: description || null,
-          folderContents: [],
-        };
-
         //do i really need to use setItemsData here?
         setItemsData((prevData) => {
           let folder = null;
@@ -142,7 +133,7 @@ function EditItemModal({
         description: description || null,
       });
 
-      editFolder(folderName, description, parentFolderID)
+      editFolder(folderName, description, itemID)
         .then(async (res) => {
           const data = await res.json();
 
@@ -153,47 +144,30 @@ function EditItemModal({
         })
         .then((data) => {
           console.log(data);
-          const newFolder: Folder = {
-            id: data.id,
-            name: data.name,
-            parentId: data.parent_folder_id,
-            type: "folder",
-            description: data.description,
-            folderContents: [],
-          };
 
           setItemsData((prevData) => {
+            let folder = null;
             if (parentFolderID === 0) {
-              const exists = prevData.folderContents?.some(
-                (item) => item.id === newFolder.id
-              );
-              if (exists) return prevData;
-
-              return {
-                folderContents: [...(prevData.folderContents || []), newFolder],
-              };
+              folder = itemsData;
+            } else {
+              folder = index.get(parentFolderID);
             }
-
-            const parentFolder = index.get(parentFolderID);
-
-            if (!parentFolder || parentFolder.type !== "folder") {
-              console.error("Parent folder not found in index");
+            if (!folder) {
+              console.error("Folder not found!");
               return prevData;
             }
+            for (const item of folder.folderContents as Folder[]) {
+              if (item.id === itemID) {
+                item.description = data.description;
+                item.name = data.name;
 
-            const exists = parentFolder.folderContents.some(
-              (item) => item.id === newFolder.id
-            );
-            if (exists) {
-              console.log("Folder already exists, skipping");
-              return prevData;
+                break;
+              }
             }
-
-            parentFolder.folderContents.push(newFolder);
             return { ...prevData };
           });
         })
-        .catch((data) => console.error(data.message));
+        .catch((data) => console.error(data));
     } else {
       console.log({
         type: "link",
@@ -203,7 +177,7 @@ function EditItemModal({
         parentFolderID: parentFolderID,
       });
 
-      editLink(url, title, description, parentFolderID)
+      editLink(url, title, description, itemID)
         .then(async (res) => {
           const data = await res.json();
 
@@ -214,32 +188,35 @@ function EditItemModal({
         })
         .then((data) => {
           console.log(data);
-          const newLink: Link = {
-            id: data.id,
-            url: data.url,
-            title: data.title,
-            parentId: data.folder_id,
-            type: "link",
-            description: data.description,
-          };
 
           setItemsData((prevData) => {
-            const parentFolder = index.get(parentFolderID);
+            let folder = null;
+            if (parentFolderID === 0) {
+              folder = itemsData;
+            } else {
+              folder = index.get(parentFolderID);
+            }
 
-            if (!parentFolder || parentFolder.type !== "folder") {
-              console.error("Parent folder not found in index");
+            console.dir(folder);
+
+            //   if (!parentFolder || parentFolder.type !== "folder") {
+            //     console.error("Parent folder not found in index");
+            //     return prevData;
+            //   }
+            if (!folder) {
+              console.error("Folder not found!");
               return prevData;
             }
 
-            const exists = parentFolder.folderContents.some(
-              (item) => item.id === newLink.id
-            );
-            if (exists) {
-              console.log("Link already exists, skipping");
-              return prevData;
+            for (const item of folder.folderContents as Link[]) {
+              if (item.id === itemID) {
+                item.description = data.description;
+                item.url = data.url;
+                item.title = data.title;
+                break;
+              }
             }
 
-            parentFolder.folderContents.push(newLink);
             return { ...prevData };
           });
         })

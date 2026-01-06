@@ -11,6 +11,8 @@ import { addFolder } from "./api/addFolder.js";
 import type { UserJwtPayload } from "./types/express.js";
 import { getFolderTree } from "./api/getTree.js";
 import { addLink } from "./api/addLink.js";
+import { editFolder } from "./api/editFolder.js";
+import { editLink } from "./api/editLink.js";
 
 // Create a new express application instance
 const app = express();
@@ -76,6 +78,67 @@ app.post(
     const newFolder = await addFolder(req.body, req.user as UserJwtPayload);
 
     res.status(200).json(newFolder);
+  }
+);
+
+app.put(
+  "/edit/folder",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const updatedFolder = await editFolder(
+        req.body,
+        req.user as UserJwtPayload
+      );
+
+      res.status(200).json(updatedFolder);
+    } catch (err: any) {
+      console.error("Error editing folder:", err);
+
+      // Send appropriate error response based on the error message
+      if (err.message.includes("already exists")) {
+        return res.status(409).json({ error: err.message });
+      }
+
+      if (
+        err.message.includes("not found") ||
+        err.message.includes("permission")
+      ) {
+        return res.status(404).json({ error: err.message });
+      }
+
+      // Generic error for unexpected issues
+      res.status(500).json({ error: "Failed to update folder" });
+    }
+  }
+);
+
+app.put(
+  "/edit/link",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const updatedLink = await editLink(req.body, req.user as UserJwtPayload);
+
+      res.status(200).json(updatedLink);
+    } catch (err: any) {
+      console.error("Error editing link:", err);
+
+      // Send appropriate error response based on the error message
+      if (err.message.includes("already exists")) {
+        return res.status(409).json({ error: err.message });
+      }
+
+      if (
+        err.message.includes("not found") ||
+        err.message.includes("permission")
+      ) {
+        return res.status(404).json({ error: err.message });
+      }
+
+      // Generic error for unexpected issues
+      res.status(500).json({ error: "Failed to update link" });
+    }
   }
 );
 
