@@ -2,12 +2,7 @@ import React, { useContext, useState } from "react";
 import "./css/AddItemModal.css";
 import { DataContext } from "../context/DataContext";
 import { UserContext } from "../context/UserContext";
-import {
-  addFolder,
-  addLink,
-  editFolder,
-  editLink,
-} from "../utils/fetches/items";
+import { editFolder, editLink } from "../utils/fetches/items";
 import type { Folder, Link } from "../types/types";
 
 type ModalMode = "folder" | "link";
@@ -45,11 +40,6 @@ function EditItemModal({
     openForm(false);
   };
 
-  // Generate a temporary negative ID for client-side items
-  const generateTempId = () => {
-    return -Math.floor(Math.random() * 1000000);
-  };
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -60,6 +50,7 @@ function EditItemModal({
     if (!userData) {
       if (mode === "folder") {
         //do i really need to use setItemsData here?
+        // i think yes and also its not the react way to modify state directly like this
         setItemsData((prevData) => {
           let folder = null;
           if (parentFolderID === 0) {
@@ -67,12 +58,12 @@ function EditItemModal({
           } else {
             folder = index.get(parentFolderID);
           }
-          if (!folder) {
+          if (!folder || !folder.folderContents) {
             console.error("Folder not found!");
             return prevData;
           }
-          for (const item of folder.folderContents as Folder[]) {
-            if (item.id === itemID) {
+          for (const item of folder.folderContents) {
+            if (item.id === itemID && item.type === "folder") {
               item.description = description;
               item.name = folderName;
 
@@ -98,13 +89,13 @@ function EditItemModal({
           //     console.error("Parent folder not found in index");
           //     return prevData;
           //   }
-          if (!folder) {
-            console.error("Folder not found!");
+          if (!folder || !folder.folderContents) {
+            console.error("Link not found!");
             return prevData;
           }
 
-          for (const item of folder.folderContents as Link[]) {
-            if (item.id === itemID) {
+          for (const item of folder.folderContents) {
+            if (item.id === itemID && item.type === "link") {
               item.description = description;
               item.url = url;
               item.title = title;
@@ -152,12 +143,12 @@ function EditItemModal({
             } else {
               folder = index.get(parentFolderID);
             }
-            if (!folder) {
+            if (!folder || !folder.folderContents) {
               console.error("Folder not found!");
               return prevData;
             }
-            for (const item of folder.folderContents as Folder[]) {
-              if (item.id === itemID) {
+            for (const item of folder.folderContents) {
+              if (item.id === itemID && item.type === "folder") {
                 item.description = data.description;
                 item.name = data.name;
 
@@ -203,13 +194,13 @@ function EditItemModal({
             //     console.error("Parent folder not found in index");
             //     return prevData;
             //   }
-            if (!folder) {
+            if (!folder || !folder.folderContents) {
               console.error("Folder not found!");
               return prevData;
             }
 
-            for (const item of folder.folderContents as Link[]) {
-              if (item.id === itemID) {
+            for (const item of folder.folderContents) {
+              if (item.id === itemID && item.type === "link") {
                 item.description = data.description;
                 item.url = data.url;
                 item.title = data.title;

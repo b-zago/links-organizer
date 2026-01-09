@@ -26,6 +26,7 @@ export type LinkItemProps = {
     description: string,
     url: string
   ) => void;
+  showDelPopup: (itemID: number, mode: string) => void;
 };
 
 export type FolderItemProps = {
@@ -34,6 +35,7 @@ export type FolderItemProps = {
   id: number;
   openFolder: React.Dispatch<React.SetStateAction<number>>;
   showEditForm: (id: number, folderName: string, description: string) => void;
+  showDelPopup: (itemID: number, mode: string) => void;
 };
 
 export type EditFormDataType = {

@@ -20,12 +20,16 @@
   @apply bg-[var(--dark-blue)]/80 border-2 border-[var(--dark-green)] rounded-md;
   @apply text-[var(--light-blue)] transition-all;
   @apply hover:border-[var(--light-green)] hover:text-[var(--light-green)] hover:bg-[var(--dark-blue)];
-  @apply opacity-0;
   @apply cursor-pointer;
 }
 
-.item:hover .item-edit-btn {
-  @apply opacity-100;
+.item-delete-btn {
+  @apply absolute top-2 left-2;
+  @apply w-8 h-8 flex items-center justify-center;
+  @apply bg-[var(--dark-blue)]/80 border-2 border-[var(--dark-green)] rounded-md;
+  @apply text-[var(--light-blue)] transition-all;
+  @apply hover:border-[var(--light-green)] hover:text-[var(--light-green)] hover:bg-[var(--dark-blue)];
+  @apply cursor-pointer;
 }
 
 .item h3 {

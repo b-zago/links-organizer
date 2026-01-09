@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+.popup-overlay {
+  @apply fixed inset-0 bg-black/50 flex items-center justify-center z-50;
+}
+
+.popup-content {
+  @apply bg-[var(--dark-blue)] border-2 border-[var(--dark-green)] rounded-lg p-8;
+  @apply flex flex-col items-center gap-6;
+  @apply min-w-[300px] max-w-[500px];
+}
+
+.popup-content h2 {
+  @apply text-[var(--light-green)] text-xl font-semibold text-center m-0;
+}
+
+.popup-buttons {
+  @apply flex gap-4;
+}
+
+.popup-btn {
+  @apply px-6 py-2 rounded-md font-semibold cursor-pointer transition-all;
+  @apply border-2;
+}
+
+.popup-btn-yes {
+  @apply bg-[var(--dark-green)] border-[var(--dark-green)] text-[var(--light-green)];
+  @apply hover:bg-[var(--light-green)] hover:text-[var(--dark-blue)];
+}
+
+.popup-btn-no {
+  @apply bg-transparent border-[var(--dark-green)] text-[var(--light-blue)];
+  @apply hover:border-[var(--light-blue)] hover:text-[var(--light-blue)];
+}

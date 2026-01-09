@@ -13,10 +13,13 @@ import { getItems } from "../utils/fetches/items";
 import Spinner from "../components/Spinner";
 import { UserContext } from "../context/UserContext";
 import EditItemModal from "../components/EditForm";
+import DelPopup from "../components/DelPopup";
 
 function Home() {
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
+  const [isDelPopupOpen, setIsDelPopupOpen] = useState(false);
+  const [delData, setDelData] = useState({ itemID: 0, mode: "folder" });
   const [editFormData, setEditFormData] = useState<EditFormDataType>({
     itemID: 0,
     mode: "folder",
@@ -107,6 +110,11 @@ function Home() {
     setIsEditFormOpen(true);
   };
 
+  const showDelPopup = (itemID: number, mode: string) => {
+    setDelData({ itemID, mode });
+    setIsDelPopupOpen(true);
+  };
+
   return (
     <>
       {isAddFormOpen && (
@@ -125,6 +133,14 @@ function Home() {
           currentFolderName={editFormData.currentFolderName}
           currentTitle={editFormData.currentTitle}
           currentURL={editFormData.currentURL}
+        />
+      )}
+      {isDelPopupOpen && (
+        <DelPopup
+          onClose={setIsDelPopupOpen}
+          itemID={delData.itemID}
+          mode={delData.mode}
+          parentFolderID={currentFolder}
         />
       )}
       <Breadcrumbs list={breadcrumbs} goToFolder={setCurrentFolder} />
@@ -155,6 +171,7 @@ function Home() {
                   url={item.url}
                   id={item.id}
                   showEditForm={showEditFormLink}
+                  showDelPopup={showDelPopup}
                 />
               );
             }
@@ -166,6 +183,7 @@ function Home() {
                 id={item.id}
                 openFolder={setCurrentFolder}
                 showEditForm={showEditFormFolder}
+                showDelPopup={showDelPopup}
               />
             );
           })}

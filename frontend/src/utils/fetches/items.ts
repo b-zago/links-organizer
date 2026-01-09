@@ -87,3 +87,23 @@ export function editLink(
     }),
   });
 }
+
+export function delFolder(id: number) {
+  return fetch(`http://localhost:3000/delete/folder/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", //tells browser to accept cookies
+  });
+}
+
+export function delLink(id: number) {
+  return fetch(`http://localhost:3000/delete/link/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include", //tells browser to accept cookies
+  });
+}

@@ -13,6 +13,8 @@ import { getFolderTree } from "./api/getTree.js";
 import { addLink } from "./api/addLink.js";
 import { editFolder } from "./api/editFolder.js";
 import { editLink } from "./api/editLink.js";
+import { delLink } from "./api/delLink.js";
+import { delFolder } from "./api/delFolder.js";
 
 // Create a new express application instance
 const app = express();
@@ -149,6 +151,72 @@ app.post(
     const newLink = await addLink(req.body, req.user as UserJwtPayload);
 
     res.status(200).json(newLink);
+  }
+);
+
+app.delete(
+  "/delete/folder/:id",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const folderID = parseInt(req.params.id);
+
+      if (isNaN(folderID)) {
+        return res.status(400).json({ error: "Invalid folder ID" });
+      }
+
+      await delFolder(folderID, req.user as UserJwtPayload);
+
+      res
+        .status(200)
+        .json({ status: "ok", message: "Folder deleted successfully" });
+    } catch (err: any) {
+      console.error("Error deleting folder:", err);
+
+      if (
+        err.message.includes("not found") ||
+        err.message.includes("permission")
+      ) {
+        return res.status(404).json({ error: err.message });
+      }
+
+      if (err.message.includes("contains subfolders or links")) {
+        return res.status(409).json({ error: err.message });
+      }
+
+      res.status(500).json({ error: "Failed to delete folder" });
+    }
+  }
+);
+
+app.delete(
+  "/delete/link/:id",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    try {
+      const linkID = parseInt(req.params.id);
+
+      if (isNaN(linkID)) {
+        return res.status(400).json({ error: "Invalid link ID" });
+      }
+
+      await delLink(linkID, req.user as UserJwtPayload);
+
+      res
+        .status(200)
+        .json({ status: "ok", message: "Link deleted successfully" });
+    } catch (err: any) {
+      console.error("Error deleting link:", err);
+
+      if (
+        err.message.includes("not found") ||
+        err.message.includes("permission")
+      ) {
+        return res.status(404).json({ error: err.message });
+      }
+
+      res.status(500).json({ error: "Failed to delete link" });
+    }
   }
 );
 
