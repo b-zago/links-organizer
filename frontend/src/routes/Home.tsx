@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import AddItem from "../components/AddItem";
 import "./home.css";
 import AddItemModal from "../components/AddForm";
@@ -28,17 +28,12 @@ function Home() {
     currentFolderName: "",
     currentURL: "",
   });
-  const [visibleItems, setVisibleItems] = useState<HomeFolder>({
-    folderContents: null,
-  });
   const [currentFolder, setCurrentFolder] = useState(0);
-  const [breadcrumbs, setBreadcrumbs] = useState<
-    { id: number; title: string }[]
-  >([{ id: 0, title: "Home" }]);
   const [isLoading, setIsLoading] = useState(false);
   const { itemsData, index, setItemsData } = useContext(DataContext);
   const { userData } = useContext(UserContext);
 
+  // Fetch initial data
   useEffect(() => {
     if (!itemsData.folderContents && userData) {
       setIsLoading(true);
@@ -60,22 +55,29 @@ function Home() {
           setIsLoading(false);
         });
     }
-  }, [userData, setItemsData]);
+  }, [userData]);
 
-  // Combine both effects into one
-  useEffect(() => {
-    if (!itemsData.folderContents) return;
+  // Compute visible items based on currentFolder
+  const visibleItems = useMemo<HomeFolder>(() => {
+    if (!itemsData.folderContents) {
+      return { folderContents: null };
+    }
 
     if (currentFolder === 0) {
-      setBreadcrumbs([{ id: 0, title: "Home" }]);
-      setVisibleItems(itemsData);
-    } else {
-      const newItems = getFolderContentsById(index, currentFolder);
-      const newBreadcrumbs = getBreadcrumbs(index, currentFolder);
-      setBreadcrumbs(newBreadcrumbs);
-      setVisibleItems({ folderContents: newItems });
+      return itemsData;
     }
+
+    const contents = getFolderContentsById(index, currentFolder);
+    return { folderContents: contents };
   }, [itemsData, currentFolder, index]);
+
+  // Compute breadcrumbs based on currentFolder
+  const breadcrumbs = useMemo(() => {
+    if (currentFolder === 0) {
+      return [{ id: 0, title: "Home" }];
+    }
+    return getBreadcrumbs(index, currentFolder);
+  }, [index, currentFolder]);
 
   const showEditFormLink = (
     id: number,
@@ -161,11 +163,11 @@ function Home() {
         </div>
       ) : (
         <div className="items-wrapper">
-          {visibleItems.folderContents?.map((item, index) => {
+          {visibleItems.folderContents?.map((item) => {
             if (item.type === "link") {
               return (
                 <LinkItem
-                  key={`link${item.id}`}
+                  key={item.id}
                   title={item.title}
                   description={item.description}
                   url={item.url}
@@ -177,7 +179,7 @@ function Home() {
             }
             return (
               <FolderItem
-                key={`folder${item.id}`}
+                key={item.id}
                 name={item.name}
                 description={item.description}
                 id={item.id}

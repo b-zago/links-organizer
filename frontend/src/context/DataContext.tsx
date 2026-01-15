@@ -1,7 +1,7 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useMemo, useState } from "react";
 
 import type { ReactNode } from "react";
-import type { DataContextType, Folder, HomeFolder, Link } from "../types/types";
+import type { DataContextType, HomeFolder } from "../types/types";
 import { buildFolderIndex } from "../utils/extractFolder";
 
 export const DataContext = createContext<DataContextType>({
@@ -14,13 +14,12 @@ export function DataContextProvider({ children }: { children: ReactNode }) {
   const [itemsData, setItemsData] = useState<HomeFolder>({
     folderContents: null,
   });
-  const [index, setIndex] = useState<Map<number, Folder>>(new Map());
 
-  useEffect(() => {
-    if (itemsData.folderContents === null) return;
+  // Index is derived from itemsData - no need for separate state
+  const index = useMemo(() => {
+    if (itemsData.folderContents === null) return new Map();
     console.log("indexing...");
-    const newIndex = buildFolderIndex(itemsData);
-    setIndex(newIndex);
+    return buildFolderIndex(itemsData);
   }, [itemsData]);
 
   return (
