@@ -4,6 +4,7 @@ import { DataContext } from "../context/DataContext";
 import { UserContext } from "../context/UserContext";
 import { addFolder, addLink } from "../utils/fetches/items";
 import type { Folder, Link } from "../types/types";
+import { addItemToTree } from "../utils/stateHelpers";
 
 type ModalMode = "folder" | "link";
 
@@ -19,7 +20,7 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const { index, setItemsData } = useContext(DataContext);
+  const { setItemsData } = useContext(DataContext);
   const { userData } = useContext(UserContext);
 
   const onClose = () => {
@@ -50,29 +51,17 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
         };
 
         setItemsData((prevData) => {
-          if (parentFolderID === 0) {
-            return {
-              folderContents: [...(prevData.folderContents || []), newFolder],
-            };
+          if (!prevData.folderContents) {
+            return { folderContents: [newFolder] };
           }
 
-          const parentFolder = index.get(parentFolderID);
-
-          if (!parentFolder || parentFolder.type !== "folder") {
-            console.error("Parent folder not found in index");
-            return prevData;
-          }
-
-          const exists = parentFolder.folderContents.some(
-            (item) => item.id === newFolder.id
+          const updatedContents = addItemToTree(
+            prevData.folderContents,
+            parentFolderID,
+            newFolder
           );
-          if (exists) {
-            console.log("Folder already exists, skipping");
-            return prevData;
-          }
 
-          parentFolder.folderContents.push(newFolder);
-          return { ...prevData };
+          return { folderContents: updatedContents };
         });
       } else {
         // Adding link in memory
@@ -80,35 +69,23 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
           id: generateTempId(),
           url: url,
           title: title,
-          parentId: parentFolderID,
+          parentId: parentFolderID === 0 ? null : parentFolderID,
           type: "link",
           description: description || null,
         };
 
         setItemsData((prevData) => {
-          if (parentFolderID === 0) {
-            return {
-              folderContents: [...(prevData.folderContents || []), newLink],
-            };
+          if (!prevData.folderContents) {
+            return { folderContents: [newLink] };
           }
 
-          const parentFolder = index.get(parentFolderID);
-
-          if (!parentFolder || parentFolder.type !== "folder") {
-            console.error("Parent folder not found in index");
-            return prevData;
-          }
-
-          const exists = parentFolder.folderContents.some(
-            (item) => item.id === newLink.id
+          const updatedContents = addItemToTree(
+            prevData.folderContents,
+            parentFolderID,
+            newLink
           );
-          if (exists) {
-            console.log("Folder already exists, skipping");
-            return prevData;
-          }
 
-          parentFolder.folderContents.push(newLink);
-          return { ...prevData };
+          return { folderContents: updatedContents };
         });
       }
 
@@ -123,12 +100,6 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
 
     // User IS signed in - make API calls
     if (mode === "folder") {
-      console.log({
-        type: "folder",
-        name: folderName,
-        description: description || null,
-      });
-
       addFolder(folderName, description, parentFolderID)
         .then(async (res) => {
           const data = await res.json();
@@ -140,6 +111,7 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
         })
         .then((data) => {
           console.log(data);
+
           const newFolder: Folder = {
             id: data.id,
             name: data.name,
@@ -150,25 +122,12 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
           };
 
           setItemsData((prevData) => {
-            if (parentFolderID === 0) {
-              const exists = prevData.folderContents?.some(
-                (item) => item.id === newFolder.id
-              );
-              if (exists) return prevData;
-
-              return {
-                folderContents: [...(prevData.folderContents || []), newFolder],
-              };
+            if (!prevData.folderContents) {
+              return { folderContents: [newFolder] };
             }
 
-            const parentFolder = index.get(parentFolderID);
-
-            if (!parentFolder || parentFolder.type !== "folder") {
-              console.error("Parent folder not found in index");
-              return prevData;
-            }
-
-            const exists = parentFolder.folderContents.some(
+            // Check if already exists (prevent duplicates)
+            const exists = prevData.folderContents.some(
               (item) => item.id === newFolder.id
             );
             if (exists) {
@@ -176,20 +135,17 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
               return prevData;
             }
 
-            parentFolder.folderContents.push(newFolder);
-            return { ...prevData };
+            const updatedContents = addItemToTree(
+              prevData.folderContents,
+              parentFolderID,
+              newFolder
+            );
+
+            return { folderContents: updatedContents };
           });
         })
-        .catch((data) => console.error(data.message));
+        .catch((error) => console.error(error.message));
     } else {
-      console.log({
-        type: "link",
-        url,
-        title,
-        description: description || null,
-        parentFolderID: parentFolderID,
-      });
-
       addLink(url, title, description, parentFolderID)
         .then(async (res) => {
           const data = await res.json();
@@ -201,6 +157,7 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
         })
         .then((data) => {
           console.log(data);
+
           const newLink: Link = {
             id: data.id,
             url: data.url,
@@ -211,14 +168,12 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
           };
 
           setItemsData((prevData) => {
-            const parentFolder = index.get(parentFolderID);
-
-            if (!parentFolder || parentFolder.type !== "folder") {
-              console.error("Parent folder not found in index");
-              return prevData;
+            if (!prevData.folderContents) {
+              return { folderContents: [newLink] };
             }
 
-            const exists = parentFolder.folderContents.some(
+            // Check if already exists (prevent duplicates)
+            const exists = prevData.folderContents.some(
               (item) => item.id === newLink.id
             );
             if (exists) {
@@ -226,11 +181,16 @@ function AddItemModal({ openForm, parentFolderID }: AddItemModalProps) {
               return prevData;
             }
 
-            parentFolder.folderContents.push(newLink);
-            return { ...prevData };
+            const updatedContents = addItemToTree(
+              prevData.folderContents,
+              parentFolderID,
+              newLink
+            );
+
+            return { folderContents: updatedContents };
           });
         })
-        .catch((data) => console.error(data.message));
+        .catch((error) => console.error(error.message));
     }
 
     // Reset

@@ -3,7 +3,7 @@ import "./css/AddItemModal.css";
 import { DataContext } from "../context/DataContext";
 import { UserContext } from "../context/UserContext";
 import { editFolder, editLink } from "../utils/fetches/items";
-import type { Folder, Link } from "../types/types";
+import { updateItemInTree } from "../utils/stateHelpers";
 
 type ModalMode = "folder" | "link";
 
@@ -33,7 +33,7 @@ function EditItemModal({
   const [title, setTitle] = useState(currentTitle);
   const [description, setDescription] = useState(currentDescription);
 
-  const { index, itemsData, setItemsData } = useContext(DataContext);
+  const { setItemsData } = useContext(DataContext);
   const { userData } = useContext(UserContext);
 
   const onClose = () => {
@@ -49,61 +49,38 @@ function EditItemModal({
     // If user is NOT signed in, handle everything in memory
     if (!userData) {
       if (mode === "folder") {
-        //do i really need to use setItemsData here?
-        // i think yes and also its not the react way to modify state directly like this
         setItemsData((prevData) => {
-          let folder = null;
-          if (parentFolderID === 0) {
-            folder = itemsData;
-          } else {
-            folder = index.get(parentFolderID);
-          }
-          if (!folder || !folder.folderContents) {
-            console.error("Folder not found!");
-            return prevData;
-          }
-          for (const item of folder.folderContents) {
-            if (item.id === itemID && item.type === "folder") {
-              item.description = description;
-              item.name = folderName;
+          if (!prevData.folderContents) return prevData;
 
-              break;
+          const updatedContents = updateItemInTree(
+            prevData.folderContents,
+            parentFolderID,
+            itemID,
+            {
+              name: folderName,
+              description: description || null,
             }
-          }
-          return { ...prevData };
+          );
+
+          return { folderContents: updatedContents };
         });
       } else {
         // Editing link in memory
-        //do i really need to use setItemsData here?
         setItemsData((prevData) => {
-          let folder = null;
-          if (parentFolderID === 0) {
-            folder = itemsData;
-          } else {
-            folder = index.get(parentFolderID);
-          }
+          if (!prevData.folderContents) return prevData;
 
-          console.dir(folder);
-
-          //   if (!parentFolder || parentFolder.type !== "folder") {
-          //     console.error("Parent folder not found in index");
-          //     return prevData;
-          //   }
-          if (!folder || !folder.folderContents) {
-            console.error("Link not found!");
-            return prevData;
-          }
-
-          for (const item of folder.folderContents) {
-            if (item.id === itemID && item.type === "link") {
-              item.description = description;
-              item.url = url;
-              item.title = title;
-              break;
+          const updatedContents = updateItemInTree(
+            prevData.folderContents,
+            parentFolderID,
+            itemID,
+            {
+              title,
+              url,
+              description: description || null,
             }
-          }
+          );
 
-          return { ...prevData };
+          return { folderContents: updatedContents };
         });
       }
 
@@ -118,12 +95,6 @@ function EditItemModal({
 
     // User IS signed in - make API calls
     if (mode === "folder") {
-      console.log({
-        type: "folder",
-        name: folderName,
-        description: description || null,
-      });
-
       editFolder(folderName, description, itemID)
         .then(async (res) => {
           const data = await res.json();
@@ -137,37 +108,23 @@ function EditItemModal({
           console.log(data);
 
           setItemsData((prevData) => {
-            let folder = null;
-            if (parentFolderID === 0) {
-              folder = itemsData;
-            } else {
-              folder = index.get(parentFolderID);
-            }
-            if (!folder || !folder.folderContents) {
-              console.error("Folder not found!");
-              return prevData;
-            }
-            for (const item of folder.folderContents) {
-              if (item.id === itemID && item.type === "folder") {
-                item.description = data.description;
-                item.name = data.name;
+            if (!prevData.folderContents) return prevData;
 
-                break;
+            const updatedContents = updateItemInTree(
+              prevData.folderContents,
+              parentFolderID,
+              itemID,
+              {
+                name: data.name,
+                description: data.description,
               }
-            }
-            return { ...prevData };
+            );
+
+            return { folderContents: updatedContents };
           });
         })
-        .catch((data) => console.error(data));
+        .catch((error) => console.error(error.message));
     } else {
-      console.log({
-        type: "link",
-        url,
-        title,
-        description: description || null,
-        parentFolderID: parentFolderID,
-      });
-
       editLink(url, title, description, itemID)
         .then(async (res) => {
           const data = await res.json();
@@ -181,37 +138,23 @@ function EditItemModal({
           console.log(data);
 
           setItemsData((prevData) => {
-            let folder = null;
-            if (parentFolderID === 0) {
-              folder = itemsData;
-            } else {
-              folder = index.get(parentFolderID);
-            }
+            if (!prevData.folderContents) return prevData;
 
-            console.dir(folder);
-
-            //   if (!parentFolder || parentFolder.type !== "folder") {
-            //     console.error("Parent folder not found in index");
-            //     return prevData;
-            //   }
-            if (!folder || !folder.folderContents) {
-              console.error("Folder not found!");
-              return prevData;
-            }
-
-            for (const item of folder.folderContents) {
-              if (item.id === itemID && item.type === "link") {
-                item.description = data.description;
-                item.url = data.url;
-                item.title = data.title;
-                break;
+            const updatedContents = updateItemInTree(
+              prevData.folderContents,
+              parentFolderID,
+              itemID,
+              {
+                title: data.title,
+                url: data.url,
+                description: data.description,
               }
-            }
+            );
 
-            return { ...prevData };
+            return { folderContents: updatedContents };
           });
         })
-        .catch((data) => console.error(data.message));
+        .catch((error) => console.error(error.message));
     }
 
     // Reset
@@ -327,7 +270,7 @@ function EditItemModal({
               Cancel
             </button>
             <button type="submit" className="btn-submit">
-              {mode === "folder" ? "Create Folder" : "Add Link"}
+              Save Changes
             </button>
           </div>
         </form>

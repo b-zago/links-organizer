@@ -60,7 +60,7 @@ function Home() {
           setIsLoading(false);
         });
     }
-  }, [userData]);
+  }, [userData, setItemsData]);
 
   // Combine both effects into one
   useEffect(() => {
@@ -165,7 +165,7 @@ function Home() {
             if (item.type === "link") {
               return (
                 <LinkItem
-                  key={index}
+                  key={`link${item.id}`}
                   title={item.title}
                   description={item.description}
                   url={item.url}
@@ -177,7 +177,7 @@ function Home() {
             }
             return (
               <FolderItem
-                key={index}
+                key={`folder${item.id}`}
                 name={item.name}
                 description={item.description}
                 id={item.id}
