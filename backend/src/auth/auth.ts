@@ -13,10 +13,51 @@ type UserRow = {
   password: string;
 };
 
+function validateUsername(username: string): void {
+  if (!username || username.trim().length === 0) {
+    throw new Error("Username is required");
+  }
+  if (username.length < 3 || username.length > 20) {
+    throw new Error("Username must be between 3 and 20 characters");
+  }
+  if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+    throw new Error(
+      "Username can only contain letters, numbers, and underscores",
+    );
+  }
+}
+
+function validateEmail(email: string): void {
+  if (!email || email.trim().length === 0) {
+    throw new Error("Email is required");
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    throw new Error("Invalid email format");
+  }
+}
+
+function validatePassword(password: string): void {
+  if (!password || password.length === 0) {
+    throw new Error("Password is required");
+  }
+  if (password.length < 8) {
+    throw new Error("Password must be at least 8 characters long");
+  }
+  if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+    throw new Error("Password must contain at least one letter and one number");
+  }
+}
+
 export async function register(userData: UserRegisterData) {
-  const username = userData.username;
+  const username = userData.username.trim();
   const password = userData.password;
-  const email = userData.email;
+  const email = userData.email.trim().toLowerCase();
+
+  // Validate inputs
+  validateUsername(username);
+  validateEmail(email);
+  validatePassword(password);
 
   //hash the password
   const saltRounds = 10;

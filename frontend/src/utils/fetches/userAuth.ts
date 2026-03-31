@@ -1,7 +1,7 @@
 import type { AuthVerifyResponse, UserData } from "../../types/types";
 
 export function register(username: string, email: string, password: string) {
-  return fetch("http://localhost:3000/register", {
+  return fetch("/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export function register(username: string, email: string, password: string) {
 }
 
 export function login(username: string, password: string) {
-  return fetch("http://localhost:3000/login", {
+  return fetch("/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,13 +30,13 @@ export function login(username: string, password: string) {
 }
 
 export function checkAuth() {
-  return fetch("http://localhost:3000/auth/verify", {
+  return fetch("/auth/verify", {
     credentials: "include",
   });
 }
 
 export function authVerify(
-  setUserData: React.Dispatch<React.SetStateAction<UserData | null>>
+  setUserData: React.Dispatch<React.SetStateAction<UserData | null>>,
 ) {
   checkAuth()
     .then(async (res) => {

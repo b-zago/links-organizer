@@ -1,6 +1,6 @@
 // utils/stateHelpers.ts
 
-import type { Folder, Link, HomeFolder } from "../types/types";
+import type { Folder, Link } from "../types/types";
 
 /**
  * Recursively updates an item in the folder tree immutably
@@ -9,7 +9,7 @@ export function updateItemInTree(
   items: Array<Folder | Link>,
   parentFolderId: number,
   itemId: number,
-  updates: Partial<Folder> | Partial<Link>
+  updates: Partial<Folder> | Partial<Link>,
 ): Array<Folder | Link> {
   // If we're updating an item at the root level (parentFolderId === 0)
   if (parentFolderId === 0) {
@@ -30,7 +30,7 @@ export function updateItemInTree(
             item.folderContents,
             parentFolderId,
             itemId,
-            updates
+            updates,
           ),
         };
       }
@@ -66,7 +66,7 @@ export function updateItemInTree(
           item.folderContents,
           parentFolderId,
           itemId,
-          updates
+          updates,
         ),
       };
     }
@@ -81,7 +81,7 @@ export function updateItemInTree(
 export function addItemToTree(
   items: Array<Folder | Link>,
   parentFolderId: number,
-  newItem: Folder | Link
+  newItem: Folder | Link,
 ): Array<Folder | Link> {
   // If adding to root (parentFolderId === 0)
   if (parentFolderId === 0) {
@@ -104,7 +104,7 @@ export function addItemToTree(
         folderContents: addItemToTree(
           item.folderContents,
           parentFolderId,
-          newItem
+          newItem,
         ),
       };
     }
@@ -119,7 +119,7 @@ export function addItemToTree(
 export function deleteItemFromTree(
   items: Array<Folder | Link>,
   parentFolderId: number,
-  itemId: number
+  itemId: number,
 ): Array<Folder | Link> {
   // If deleting from root
   if (parentFolderId === 0) {
@@ -132,7 +132,7 @@ export function deleteItemFromTree(
       return {
         ...item,
         folderContents: item.folderContents.filter(
-          (child) => child.id !== itemId
+          (child) => child.id !== itemId,
         ),
       };
     }
@@ -144,7 +144,7 @@ export function deleteItemFromTree(
         folderContents: deleteItemFromTree(
           item.folderContents,
           parentFolderId,
-          itemId
+          itemId,
         ),
       };
     }

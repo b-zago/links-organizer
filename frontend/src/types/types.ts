@@ -7,6 +7,7 @@ export type UserData = {
 export type UserContextType = {
   userData: UserData | null;
   setUserData: React.Dispatch<React.SetStateAction<UserData | null>>;
+  logout: () => void;
 };
 
 export type AuthVerifyResponse = { user: UserData };
@@ -24,7 +25,7 @@ export type LinkItemProps = {
     id: number,
     title: string,
     description: string,
-    url: string
+    url: string,
   ) => void;
   showDelPopup: (itemID: number, mode: string) => void;
 };

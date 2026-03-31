@@ -15,27 +15,35 @@ import { editFolder } from "./api/editFolder.js";
 import { editLink } from "./api/editLink.js";
 import { delLink } from "./api/delLink.js";
 import { delFolder } from "./api/delFolder.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Create a new express application instance
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
 //for development
-app.use(
-  cors({
-    origin: "http://localhost:5173", // Your React app URL
-    credentials: true, // CRITICAL! Allows cookies to be sent/received
-  })
-);
+if (process.env.NODE_ENV === "development") {
+  app.use(
+    cors({
+      origin: "http://localhost:5173", // Your React app URL
+      credentials: true, // CRITICAL! Allows cookies to be sent/received
+    }),
+  );
+}
 
 // Set the network port
 const port = process.env.PORT || 3000;
 
-// Define the root path with a greeting message
-app.get("/", (req: Request, res: Response) => {
-  res.json({ message: "Welcome to the Express + TypeScript Server!" });
-});
+// // Define the root path with a greeting message
+// app.get("/", (req: Request, res: Response) => {
+//   res.json({ message: "Welcome to the Express + TypeScript Server!" });
+// });
 
 app.post("/register", async (req: Request, res: Response) => {
   console.log(req.body);
@@ -67,6 +75,11 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
+app.post("/logout", (req: Request, res: Response) => {
+  res.clearCookie("token");
+  res.status(200).json({ message: "Logged out!" });
+});
+
 app.get("/auth/verify", authenticateToken, (req: Request, res: Response) => {
   res.status(200).json({
     user: req.user,
@@ -80,7 +93,7 @@ app.post(
     const newFolder = await addFolder(req.body, req.user as UserJwtPayload);
 
     res.status(200).json(newFolder);
-  }
+  },
 );
 
 app.put(
@@ -90,7 +103,7 @@ app.put(
     try {
       const updatedFolder = await editFolder(
         req.body,
-        req.user as UserJwtPayload
+        req.user as UserJwtPayload,
       );
 
       res.status(200).json(updatedFolder);
@@ -112,7 +125,7 @@ app.put(
       // Generic error for unexpected issues
       res.status(500).json({ error: "Failed to update folder" });
     }
-  }
+  },
 );
 
 app.put(
@@ -141,7 +154,7 @@ app.put(
       // Generic error for unexpected issues
       res.status(500).json({ error: "Failed to update link" });
     }
-  }
+  },
 );
 
 app.post(
@@ -151,7 +164,7 @@ app.post(
     const newLink = await addLink(req.body, req.user as UserJwtPayload);
 
     res.status(200).json(newLink);
-  }
+  },
 );
 
 app.delete(
@@ -186,7 +199,7 @@ app.delete(
 
       res.status(500).json({ error: "Failed to delete folder" });
     }
-  }
+  },
 );
 
 app.delete(
@@ -217,7 +230,7 @@ app.delete(
 
       res.status(500).json({ error: "Failed to delete link" });
     }
-  }
+  },
 );
 
 app.get(
@@ -228,8 +241,16 @@ app.get(
       const items = await getFolderTree(req.user.id);
       res.status(200).json(items);
     }
-  }
+  },
 );
+
+// SERVE STATIC FILES - After API routes
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+// CATCH-ALL ROUTE - Must be last
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
 
 // Start the Express server
 app.listen(port, () => {

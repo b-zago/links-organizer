@@ -1,9 +1,9 @@
 export function addFolder(
   folderName: string,
   description: string | null,
-  parentFolderID: number
+  parentFolderID: number,
 ) {
-  return fetch("http://localhost:3000/add/folder", {
+  return fetch("/add/folder", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,9 +21,9 @@ export function addLink(
   url: string,
   title: string,
   description: string | null,
-  parentFolderID: number
+  parentFolderID: number,
 ) {
-  return fetch("http://localhost:3000/add/link", {
+  return fetch("/add/link", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export function addLink(
 }
 
 export function getItems() {
-  return fetch("http://localhost:3000/get/items", {
+  return fetch("/get/items", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -51,9 +51,9 @@ export function getItems() {
 export function editFolder(
   folderName: string,
   description: string | null,
-  id: number
+  id: number,
 ) {
-  return fetch("http://localhost:3000/edit/folder", {
+  return fetch("/edit/folder", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -71,9 +71,9 @@ export function editLink(
   url: string,
   title: string,
   description: string | null,
-  id: number
+  id: number,
 ) {
-  return fetch("http://localhost:3000/edit/link", {
+  return fetch("/edit/link", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -89,7 +89,7 @@ export function editLink(
 }
 
 export function delFolder(id: number) {
-  return fetch(`http://localhost:3000/delete/folder/${id}`, {
+  return fetch(`/delete/folder/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -99,7 +99,7 @@ export function delFolder(id: number) {
 }
 
 export function delLink(id: number) {
-  return fetch(`http://localhost:3000/delete/link/${id}`, {
+  return fetch(`/delete/link/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

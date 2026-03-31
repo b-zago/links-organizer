@@ -2,7 +2,8 @@
 
 @font-face {
   font-family: "Roboto Mono";
-  src: url("/fonts/RobotoMono-VariableFont_wght.ttf") format("truetype"),
+  src:
+    url("/fonts/RobotoMono-VariableFont_wght.ttf") format("truetype"),
     url("/fonts/RobotoMono-Italic-VariableFont_wght.ttf") format("truetype");
 }
 
@@ -32,7 +33,7 @@ header {
 }
 
 header > a {
-  @apply flex justify-center items-center text-[var(-light-green)] text-center bg-[var(--purpel)] py-3 px-4 rounded-full cursor-pointer;
+  @apply flex justify-center items-center text-[var(--light-green)] text-center bg-[var(--purpel)] py-3 px-4 rounded-full cursor-pointer;
 }
 
 .main-container {

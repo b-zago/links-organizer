@@ -18,14 +18,73 @@ function SignInForm() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const validateUsername = (username: string): string | null => {
+    if (!username || username.trim().length === 0) {
+      return "Username is required";
+    }
+    if (username.length < 3 || username.length > 20) {
+      return "Username must be between 3 and 20 characters";
+    }
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      return "Username can only contain letters, numbers, and underscores";
+    }
+    return null;
+  };
+
+  const validateEmail = (email: string): string | null => {
+    if (!email || email.trim().length === 0) {
+      return "Email is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return "Invalid email format";
+    }
+    return null;
+  };
+
+  const validatePassword = (password: string): string | null => {
+    if (!password || password.length === 0) {
+      return "Password is required";
+    }
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long";
+    }
+    if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+      return "Password must contain at least one letter and one number";
+    }
+    return null;
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrorMessage(""); // Clear any previous errors
+
+    // Client-side validation
+    const usernameError = validateUsername(username);
+    if (usernameError) {
+      setErrorMessage(usernameError);
+      return;
+    }
+
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
+      return;
+    }
+
+    if (!signIn) {
+      const emailError = validateEmail(email);
+      if (emailError) {
+        setErrorMessage(emailError);
+        return;
+      }
+    }
+
     setIsLoading(true); // Start loading
 
     if (signIn) {
       // Login flow
-      login(username, password)
+      login(username.trim(), password)
         .then(async (res) => {
           const data = await res.json();
 
@@ -47,7 +106,7 @@ function SignInForm() {
         });
     } else {
       // Register flow
-      register(username, email, password)
+      register(username.trim(), email.trim().toLowerCase(), password)
         .then(async (res) => {
           const data = await res.json();
 
@@ -76,7 +135,7 @@ function SignInForm() {
         })
         .catch((error: Error) => {
           setErrorMessage(
-            error.message || "Registration failed. Please try again."
+            error.message || "Registration failed. Please try again.",
           );
         })
         .finally(() => {

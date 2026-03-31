@@ -57,6 +57,13 @@ function Home() {
     }
   }, [userData]);
 
+  // Clear data when user logs out
+  useEffect(() => {
+    if (!userData) {
+      setItemsData({ folderContents: null });
+    }
+  }, [userData, setItemsData]);
+
   // Compute visible items based on currentFolder
   const visibleItems = useMemo<HomeFolder>(() => {
     if (!itemsData.folderContents) {
@@ -83,7 +90,7 @@ function Home() {
     id: number,
     title: string,
     description: string,
-    url: string
+    url: string,
   ) => {
     setEditFormData({
       mode: "link",
@@ -99,7 +106,7 @@ function Home() {
   const showEditFormFolder = (
     id: number,
     folderName: string,
-    description: string
+    description: string,
   ) => {
     setEditFormData({
       mode: "folder",
