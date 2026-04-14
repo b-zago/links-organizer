@@ -155,16 +155,7 @@ function Home() {
       <Breadcrumbs list={breadcrumbs} goToFolder={setCurrentFolder} />
 
       {isLoading ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "200px",
-            flexDirection: "column",
-            gap: "16px",
-          }}
-        >
+        <div className="loading-container">
           <Spinner size={40} color="currentColor" borderWidth={3} />
           <p>Loading your folders...</p>
         </div>

@@ -15,11 +15,11 @@ function Spinner({
     <span
       className="spinner"
       style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        border: `${borderWidth}px solid ${color === "white" ? "var(--spinner-border-light)" : "var(--spinner-border-dark)"}`,
-        borderTop: `${borderWidth}px solid ${color}`,
-      }}
+        "--spinner-size": `${size}px`,
+        "--spinner-border-width": `${borderWidth}px`,
+        "--spinner-color": color,
+        "--spinner-track": color === "white" ? "var(--spinner-border-light)" : "var(--spinner-border-dark)",
+      } as React.CSSProperties}
     />
   );
 }
