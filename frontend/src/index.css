@@ -13,6 +13,10 @@
   --light-blue: #31bbd7;
   --dark-blue: #1e3a52;
   --purpel: #573b77;
+  --purpel-hover: #6b4a91;
+  --error: #ff0000;
+  --spinner-border-light: rgba(255, 255, 255, 0.3);
+  --spinner-border-dark: rgba(0, 0, 0, 0.3);
 
   font-size: 16px;
   color: var(--light-green);

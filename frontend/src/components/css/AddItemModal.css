@@ -98,7 +98,7 @@
 }
 
 .btn-cancel:hover {
-  @apply bg-[#6b4a91];
+  @apply bg-[var(--purpel-hover)];
 }
 
 .btn-submit {

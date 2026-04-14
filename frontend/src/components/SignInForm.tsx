@@ -176,7 +176,7 @@ function SignInForm() {
       />
 
       {errorMessage && (
-        <div style={{ color: "red", marginTop: "10px", marginBottom: "10px" }}>
+        <div style={{ color: "var(--error)", marginTop: "10px", marginBottom: "10px" }}>
           {errorMessage}
         </div>
       )}
