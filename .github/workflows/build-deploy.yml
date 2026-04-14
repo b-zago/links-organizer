@@ -80,7 +80,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          context: backend
+          context: .
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/b-zago/links-organizer/server:latest
