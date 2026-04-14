@@ -17,9 +17,7 @@ function Spinner({
       style={{
         width: `${size}px`,
         height: `${size}px`,
-        border: `${borderWidth}px solid rgba(${
-          color === "white" ? "255, 255, 255" : "0, 0, 0"
-        }, 0.3)`,
+        border: `${borderWidth}px solid ${color === "white" ? "var(--spinner-border-light)" : "var(--spinner-border-dark)"}`,
         borderTop: `${borderWidth}px solid ${color}`,
       }}
     />
