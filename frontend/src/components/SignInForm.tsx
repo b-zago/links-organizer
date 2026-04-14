@@ -176,21 +176,14 @@ function SignInForm() {
       />
 
       {errorMessage && (
-        <div style={{ color: "var(--error)", marginTop: "10px", marginBottom: "10px" }}>
+        <div className="error-message">
           {errorMessage}
         </div>
       )}
 
       <button disabled={isLoading}>
         {isLoading ? (
-          <span
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "8px",
-              color: "inherit",
-            }}
-          >
+          <span className="btn-loading">
             <Spinner size={16} color="white" />
             Loading...
           </span>

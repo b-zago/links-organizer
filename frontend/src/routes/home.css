@@ -58,3 +58,8 @@
 .add-item-wrapper h3 {
   @apply text-[var(--light-blue)];
 }
+
+.loading-container {
+  @apply flex justify-center items-center flex-col gap-4;
+  min-height: 200px;
+}
