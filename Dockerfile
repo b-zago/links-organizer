@@ -3,7 +3,7 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ .
-RUN tsc -b && vite build --outDir /app/dist
+RUN npx tsc -b && npx vite build --outDir /app/dist
 
 FROM node:22-alpine AS backend-builder
 WORKDIR /app
