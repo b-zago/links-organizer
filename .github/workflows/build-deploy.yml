@@ -70,11 +70,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.PAT_TOKEN }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Build and push
         uses: docker/build-push-action@v5
         with:
           push: true
           context: backend
+          platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/b-zago/links-organizer/server:latest
             ghcr.io/b-zago/links-organizer/server:${{ steps.sha.outputs.sha }}
