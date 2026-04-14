@@ -30,3 +30,13 @@ input:focus {
 button {
   @apply rounded-full bg-[var(--purpel)] py-3 px-5 cursor-pointer;
 }
+
+.error-message {
+  color: var(--error);
+  @apply mt-[10px] mb-[10px];
+}
+
+.btn-loading {
+  @apply inline-flex items-center gap-2;
+  color: inherit;
+}
