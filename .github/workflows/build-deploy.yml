@@ -1,0 +1,105 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main, stage]
+  pull_request:
+    branches: [main, stage]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run tests
+        working-directory: backend
+        run: npm test
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_NAME: links_organizer_test
+          JWT_SECRET: test_jwt_secret_for_ci
+          NODE_ENV: test
+
+  build:
+    needs: test
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Short SHA
+        id: sha
+        run: echo "sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.PAT_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: backend
+          tags: |
+            ghcr.io/b-zago/links-organizer/server:latest
+            ghcr.io/b-zago/links-organizer/server:${{ steps.sha.outputs.sha }}
+
+  deploy:
+    needs: build
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout k3d-infra repo
+        uses: actions/checkout@v4
+        with:
+          repository: b-zago/k3d-infra
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Update image tag
+        run: |
+          if [ "${{ github.ref_name }}" == "main" ]; then
+            VALUES_FILE="apps/workloads/organizer/values-prod.yml"
+          else
+            VALUES_FILE="apps/workloads/organizer/values-stage.yml"
+          fi
+          sed -i "s|server: ghcr.io/b-zago/links-organizer/server:.*|server: ghcr.io/b-zago/links-organizer/server:${{ needs.build.outputs.sha }}|" $VALUES_FILE
+          git config user.email "ci@github.com"
+          git config user.name "GitHub Actions"
+          git add $VALUES_FILE
+          git commit -m "${{ github.ref_name }}: update organizer server to ${{ needs.build.outputs.sha }}"
+          git push
