@@ -1,3 +1,4 @@
 - `npm run dev` - runs dev environment
 - `npm run build` - compiles typescript files to dist/
 - `npm start` - starts builded server from dist/index.js
+- `npm test` - basic testing, run `docker run --rm -e POSTGRES_PASSWORD=postgres -p 5432:5432 postgres:18` before testing locally

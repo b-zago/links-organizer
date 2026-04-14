@@ -18,7 +18,7 @@ type FolderRow = {
 
 export async function addFolder(
   folderData: FolderData,
-  userData: UserJwtPayload
+  userData: UserJwtPayload,
 ): Promise<FolderRow> {
   console.log(folderData, userData);
 
@@ -45,7 +45,7 @@ export async function addFolder(
     // Handle unique constraint violation (duplicate folder name in same parent)
     if (err.code === "23505") {
       throw new Error(
-        "A folder with this name already exists in the parent folder"
+        "A folder with this name already exists in the parent folder",
       );
     }
 
