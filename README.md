@@ -7,7 +7,7 @@ A web app for organizing links into custom folders. Save YouTube videos, article
 - Create folders and nest them however you like
 - Add links with a title, URL, and optional description
 - Navigate folders with breadcrumb navigation
-- You can test it out without an account - data is saved in app memory
+- You can test it out without an account — data is saved in app memory
 - Sign in to persist your data server-side and access it from anywhere
 
 ## Stack
