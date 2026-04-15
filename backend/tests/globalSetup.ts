@@ -40,7 +40,7 @@ export default async function globalSetup() {
   // Apply the schema.
   const schemaPath =
     process.env.DEV_TEST_SCHEMA_PATH ||
-    path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "postgres", "schema_dump.sql");
+    path.resolve(process.cwd(), "..", "postgres", "schema_dump.sql");
   const schema = fs.readFileSync(schemaPath, "utf8");
 
   const dbClient = new Client({
