@@ -38,7 +38,7 @@
 
 .mode-button {
   @apply flex-1 py-2 sm:py-3 rounded-lg font-semibold cursor-pointer transition-all;
-  @apply bg-transparent border-2 border-[var(--dark-green)] text-[var(--light-blue)];
+  @apply bg-[var(--dark-blue)] border-2 border-[var(--dark-green)] text-[var(--light-blue)];
   @apply text-sm sm:text-base;
 }
 
@@ -47,7 +47,7 @@
 }
 
 .mode-button.active {
-  @apply bg-[var(--light-green)] border-[var(--light-green)] text-white;
+  @apply bg-[var(--purpel)] border-[var(--purpel)] text-white;
 }
 
 .modal-form {
@@ -94,17 +94,17 @@
 }
 
 .btn-cancel {
-  @apply bg-[var(--purpel)] text-[var(--light-green)];
+  @apply bg-[var(--dark-green)] text-[var(--light-green)];
 }
 
 .btn-cancel:hover {
-  @apply bg-[var(--purpel-hover)];
+  @apply bg-[var(--cancel-hover)] text-[var(--light-green)];
 }
 
 .btn-submit {
-  @apply bg-[var(--light-green)] text-white;
+  @apply bg-[var(--purpel)] text-white border-2 border-transparent;
 }
 
 .btn-submit:hover {
-  @apply bg-[var(--dark-green)];
+  @apply bg-[var(--purpel-hover)] border-2 border-[var(--teal)];
 }
