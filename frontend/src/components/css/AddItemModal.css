@@ -51,7 +51,7 @@
 }
 
 .modal-form {
-  @apply w-full p-4 sm:p-6;
+  @apply w-full p-4 sm:p-6 rounded-none;
 }
 
 .form-group {

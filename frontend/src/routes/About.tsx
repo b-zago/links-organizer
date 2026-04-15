@@ -1,6 +1,6 @@
 function About() {
   return (
-    <div className="flex flex-col items-center justify-center p-8 bg-[var(--background)] text-[var(--text)]">
+    <div className="flex flex-col items-center justify-center p-8 bg-[var(--dark-blue)] rounded-2xl text-[var(--text)] mt-10">
       <div className="max-w-2xl text-center">
         <h1 className="text-4xl font-bold mb-6 text-[var(--light-green)]">
           About Links Organizer
