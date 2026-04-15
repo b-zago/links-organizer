@@ -14,7 +14,9 @@
   --dark-blue: #1e293b;
   --purpel: #4f46e5;
   --purpel-hover: #6366f1;
+  --teal: #82aeb1;
   --error: #f87171;
+  --cancel-hover: #131f3a;
   --spinner-border-light: rgba(255, 255, 255, 0.15);
   --spinner-border-dark: rgba(0, 0, 0, 0.3);
 
@@ -37,7 +39,7 @@ header {
 }
 
 header > a {
-  @apply flex justify-center items-center text-[var(--light-green)] text-center bg-[var(--purpel)] py-3 px-4 rounded-full cursor-pointer;
+  @apply flex justify-center items-center text-white text-center bg-[var(--purpel)] py-3 px-4 rounded-full cursor-pointer;
 }
 
 .main-container {

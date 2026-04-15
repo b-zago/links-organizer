@@ -10,7 +10,7 @@ form span {
 }
 
 form span a {
-  @apply underline;
+  @apply underline cursor-pointer;
 }
 
 label {
