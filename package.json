@@ -1,0 +1,15 @@
+{
+  "name": "dev-scripts",
+  "description": "Root-level dev scripts for Docker workflows.",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose --env-file .env.dev -f docker-compose-dev.yml up --watch",
+    "down": "docker compose --env-file .env.dev -f docker-compose-dev.yml down",
+    "logs": "docker compose --env-file .env.dev -f docker-compose-dev.yml logs -f",
+    "logs-node": "docker compose --env-file .env.dev -f docker-compose-dev.yml logs -f node-dev",
+    "logs-db": "docker compose --env-file .env.dev -f docker-compose-dev.yml logs -f db",
+    "logs-vite": "docker compose --env-file .env.dev -f docker-compose-dev.yml logs -f react-dev",
+    "test": "docker compose -f docker-compose-test.yml run --rm node-test && docker compose -f docker-compose-test.yml down",
+    "dev-build": "docker compose --env-file .env.dev -f docker-compose-dev.yml build"
+  }
+}

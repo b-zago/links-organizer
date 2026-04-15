@@ -45,6 +45,10 @@ const port = process.env.PORT || 3000;
 //   res.json({ message: "Welcome to the Express + TypeScript Server!" });
 // });
 
+app.get("/health", (_req: Request, res: Response) => {
+  res.status(200).json({ status: "okiedoeki" });
+});
+
 app.post("/register", async (req: Request, res: Response) => {
   console.log(req.body);
   //console.log("res", res);
@@ -244,13 +248,15 @@ app.get(
   },
 );
 
-// SERVE STATIC FILES - After API routes
-app.use(express.static(path.join(__dirname, "..", "public")));
+// SERVE STATIC FILES - After API routes (production only)
+if (process.env.NODE_ENV !== "development") {
+  app.use(express.static(path.join(__dirname, "..", "public")));
 
-// CATCH-ALL ROUTE - Must be last
-app.get(/.*/, (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-});
+  // CATCH-ALL ROUTE - Must be last
+  app.get(/.*/, (_req, res) => {
+    res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+  });
+}
 
 // Start the Express server
 app.listen(port, () => {

@@ -1,3 +1,4 @@
+# PROD DOCKERFILE
 FROM node:22-alpine AS frontend-builder
 WORKDIR /app
 COPY frontend/package*.json ./

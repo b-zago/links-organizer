@@ -3,6 +3,7 @@
 import { Client } from "pg";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
 export default async function globalSetup() {
   const testDbName = process.env.DB_NAME;
@@ -37,12 +38,9 @@ export default async function globalSetup() {
   await adminClient.end();
 
   // Apply the schema.
-  const schemaPath = path.resolve(
-    process.cwd(),
-    "..",
-    "postgres",
-    "schema_dump.sql",
-  );
+  const schemaPath =
+    process.env.DEV_TEST_SCHEMA_PATH ||
+    path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "postgres", "schema_dump.sql");
   const schema = fs.readFileSync(schemaPath, "utf8");
 
   const dbClient = new Client({

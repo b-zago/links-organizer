@@ -1,0 +1,36 @@
+#for testing
+name: tests-links-organizer
+
+services:
+  db-test:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d testdb"]
+      interval: 2s
+      timeout: 2s
+      retries: 10
+
+  node-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db-test
+      DB_PORT: 5432
+      DB_NAME: links_organizer_test
+      JWT_SECRET: test_jwt_secret_change_me
+      NODE_ENV: test
+      NODE_PORT: ${NODE_PORT}
+      DEV_TEST_SCHEMA_PATH: /app/postgres/schema_dump.sql
+    depends_on:
+      db-test:
+        condition: service_healthy
+    volumes:
+      - ./postgres/schema_dump.sql:/app/postgres/schema_dump.sql
+    command: node --experimental-vm-modules node_modules/jest/bin/jest.js

@@ -1,7 +1,8 @@
 import type { AuthVerifyResponse, UserData } from "../../types/types";
+import apiBase from "../apiBase";
 
 export function register(username: string, email: string, password: string) {
-  return fetch("/register", {
+  return fetch(`${apiBase}/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +17,7 @@ export function register(username: string, email: string, password: string) {
 }
 
 export function login(username: string, password: string) {
-  return fetch("/login", {
+  return fetch(`${apiBase}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -30,7 +31,7 @@ export function login(username: string, password: string) {
 }
 
 export function checkAuth() {
-  return fetch("/auth/verify", {
+  return fetch(`${apiBase}/auth/verify`, {
     credentials: "include",
   });
 }

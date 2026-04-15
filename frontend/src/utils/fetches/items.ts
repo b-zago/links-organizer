@@ -1,9 +1,11 @@
+import apiBase from "../apiBase";
+
 export function addFolder(
   folderName: string,
   description: string | null,
   parentFolderID: number,
 ) {
-  return fetch("/add/folder", {
+  return fetch(`${apiBase}/add/folder`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,7 +25,7 @@ export function addLink(
   description: string | null,
   parentFolderID: number,
 ) {
-  return fetch("/add/link", {
+  return fetch(`${apiBase}/add/link`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +41,7 @@ export function addLink(
 }
 
 export function getItems() {
-  return fetch("/get/items", {
+  return fetch(`${apiBase}/get/items`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -53,7 +55,7 @@ export function editFolder(
   description: string | null,
   id: number,
 ) {
-  return fetch("/edit/folder", {
+  return fetch(`${apiBase}/edit/folder`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -73,7 +75,7 @@ export function editLink(
   description: string | null,
   id: number,
 ) {
-  return fetch("/edit/link", {
+  return fetch(`${apiBase}/edit/link`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -89,7 +91,7 @@ export function editLink(
 }
 
 export function delFolder(id: number) {
-  return fetch(`/delete/folder/${id}`, {
+  return fetch(`${apiBase}/delete/folder/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -99,7 +101,7 @@ export function delFolder(id: number) {
 }
 
 export function delLink(id: number) {
-  return fetch(`/delete/link/${id}`, {
+  return fetch(`${apiBase}/delete/link/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
