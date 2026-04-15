@@ -8,14 +8,14 @@
 }
 
 :root {
-  --light-green: #32d989;
-  --dark-green: #2e5749;
-  --light-blue: #31bbd7;
-  --dark-blue: #1e3a52;
-  --purpel: #573b77;
-  --purpel-hover: #6b4a91;
-  --error: #ff0000;
-  --spinner-border-light: rgba(255, 255, 255, 0.3);
+  --light-green: #a5b4fc;
+  --dark-green: #0f172a;
+  --light-blue: #93c5fd;
+  --dark-blue: #1e293b;
+  --purpel: #4f46e5;
+  --purpel-hover: #6366f1;
+  --error: #f87171;
+  --spinner-border-light: rgba(255, 255, 255, 0.15);
   --spinner-border-dark: rgba(0, 0, 0, 0.3);
 
   font-size: 16px;
@@ -33,7 +33,7 @@ body {
 }
 
 header {
-  @apply w-full py-5 bg-[var(--light-blue)] flex justify-evenly;
+  @apply w-full py-5 bg-[var(--dark-blue)] flex justify-evenly border-b-2 border-[var(--light-blue)]/20;
 }
 
 header > a {

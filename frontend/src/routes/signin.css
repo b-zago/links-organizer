@@ -1,11 +1,12 @@
 @import "tailwindcss";
 
 form {
-  @apply flex flex-col items-center gap-5 p-10 bg-[var(--light-blue)] mt-10 rounded-2xl w-[80%];
+  @apply flex flex-col items-center gap-5 p-10 bg-[var(--dark-blue)] mt-10 rounded-2xl w-[80%];
+  @apply border-2 border-[var(--light-blue)]/20;
 }
 
 form span {
-  @apply text-[var(--dark-blue)] text-center;
+  @apply text-[var(--light-blue)] text-center;
 }
 
 form span a {
@@ -13,22 +14,24 @@ form span a {
 }
 
 label {
-  @apply font-bold text-[var(--dark-blue)];
+  @apply font-bold text-[var(--light-green)];
 }
 
 input {
-  border: 1px solid var(--dark-blue);
-  color: var(--dark-blue);
+  border: 1px solid rgba(147, 197, 253, 0.3);
+  color: var(--light-green);
+  background: transparent;
   padding-left: 5px;
   @apply py-1;
 }
 
 input:focus {
   outline: 0;
+  border-color: var(--light-blue);
 }
 
 button {
-  @apply rounded-full bg-[var(--purpel)] py-3 px-5 cursor-pointer;
+  @apply rounded-full bg-[var(--purpel)] py-3 px-5 cursor-pointer text-white;
 }
 
 .error-message {
