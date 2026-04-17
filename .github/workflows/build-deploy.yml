@@ -2,9 +2,9 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [main, stage]
+    branches: [ main, stage ]
   pull_request:
-    branches: [main, stage]
+    branches: [ main, stage ]
 
 jobs:
   test:
@@ -19,18 +19,16 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
@@ -57,7 +55,7 @@ jobs:
     outputs:
       sha: ${{ steps.sha.outputs.sha }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Short SHA
         id: sha
@@ -80,8 +78,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          context: .
-          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           tags: |
             ghcr.io/b-zago/links-organizer/server:latest
@@ -89,11 +85,12 @@ jobs:
 
   deploy:
     needs: build
-    if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: ghcr.io/b-zago/links-organizer/server
     steps:
       - name: Checkout k3d-infra repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: b-zago/k3d-infra
           token: ${{ secrets.PAT_TOKEN }}
@@ -105,7 +102,7 @@ jobs:
           else
             VALUES_FILE="apps/workloads/organizer/values-stage.yml"
           fi
-          sed -i "s|server: ghcr.io/b-zago/links-organizer/server:.*|server: ghcr.io/b-zago/links-organizer/server:${{ needs.build.outputs.sha }}|" $VALUES_FILE
+          sed -i "s|server: ${{ env.IMAGE_NAME }}:.*|server: ${{ env.IMAGE_NAME }}:${{ needs.build.outputs.sha }}|" $VALUES_FILE
           git config user.email "ci@github.com"
           git config user.name "GitHub Actions"
           git add $VALUES_FILE
