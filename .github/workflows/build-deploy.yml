@@ -89,7 +89,7 @@ jobs:
     env:
       IMAGE_NAME: ghcr.io/b-zago/links-organizer/server
     steps:
-      - name: Checkout k3d-infra repo
+      - name: Checkout k3s-cluster repo
         uses: actions/checkout@v6
         with:
           repository: b-zago/k3s-cluster
@@ -98,9 +98,9 @@ jobs:
       - name: Update image tag
         run: |
           if [ "${{ github.ref_name }}" == "main" ]; then
-            VALUES_FILE="apps/workloads/organizer/values-prod.yml"
+            VALUES_FILE="cluster/workloads/organizer/values-prod.yml"
           else
-            VALUES_FILE="apps/workloads/organizer/values-stage.yml"
+            VALUES_FILE="cluster/workloads/organizer/values-stage.yml"
           fi
           sed -i "s|server: ${{ env.IMAGE_NAME }}:.*|server: ${{ env.IMAGE_NAME }}:${{ needs.build.outputs.sha }}|" $VALUES_FILE
           git config user.email "ci@github.com"
