@@ -92,7 +92,7 @@ jobs:
       - name: Checkout k3d-infra repo
         uses: actions/checkout@v6
         with:
-          repository: b-zago/k3d-infra
+          repository: b-zago/k3s-cluster
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Update image tag
