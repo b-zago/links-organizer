@@ -51,10 +51,11 @@ jobs:
   deploy:
     if: github.event_name == 'push'
     needs: test
+    permissions:
+      packages: write
     uses: b-zago/actions/.github/workflows/build-deploy-ghcr.yaml@v1
     with:
       imageName: webserver
-    secrets:
-      patToken: ${{ secrets.PAT_TOKEN }}
+    secrets: inherit
     
     
