@@ -2,9 +2,9 @@ name: Build and Deploy
 
 on:
   push:
-    branches: [ main, stage ]
+    branches: [ main, staging ]
   pull_request:
-    branches: [ main, stage ]
+    branches: [ main, staging ]
 
 jobs:
   test:
